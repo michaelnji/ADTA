@@ -1,25 +1,23 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: false },
-  experimental: {
-    scanPageMeta: true,
-  },
+
   modules: [
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "@unocss/nuxt",
-    "@nuxtjs/color-mode",
+    // "@nuxtjs/color-mode",
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxt/fonts",
     "@nuxt/icon",
     "@morev/vue-transitions/nuxt",
     "shadcn-nuxt",
     "@nuxtjs/tailwindcss",
-    "@nuxtjs/supabase",
+    // "@nuxtjs/supabase",
   ],
   fonts: {
     defaults: {
-      weights: [200, 300, 400, 500, 600, 700, 800, 900],
+      weights: [100, 200, 300, 400, 500, 600, 700, 800, 900],
     },
 
     provider: "local",
@@ -30,13 +28,6 @@ export default defineNuxtConfig({
     },
     storage: "localStorage",
   },
-  colorMode: {
-    preference: "system", // default value of $colorMode.preference
-    fallback: "light", // fallback value if not system preference found
-    classPrefix: "",
-    classSuffix: "",
-  },
-
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
@@ -53,25 +44,25 @@ export default defineNuxtConfig({
       ],
     },
   },
-  supabase: {
-    redirect: false,
-    clientOptions: {
-      auth: {
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-        persistSession: false,
-      }
-    },
-    cookieName: "djs",
-    cookieOptions: {
-      maxAge: 60 * 60,
-      sameSite: "lax",
-      secure: true,
+  // supabase: {
+  //   redirect: false,
+  //   clientOptions: {
+  //     auth: {
+  //       autoRefreshToken: false,
+  //       detectSessionInUrl: false,
+  //       persistSession: false,
+  //     }
+  //   },
+  //   cookieName: "djs",
+  //   cookieOptions: {
+  //     maxAge: 60 * 60,
+  //     sameSite: "lax",
+  //     secure: true,
 
 
-    },
-    types: "./types/database.types.ts",
-  },
+  //   },
+  //   types: "./types/database.types.ts",
+  // },
   vue: {
     compilerOptions: {
       isCustomElement: ((tag) => tag.includes('layflags-rolling-number'))

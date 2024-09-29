@@ -4,11 +4,12 @@ import { defineConfig } from 'unocss'
 export default defineConfig({
     theme: {
         fontFamily: {
-            display: 'Poppins',
-            mono: 'Spline Sans Mono',
-            compact: 'Manrope',
-            body: 'Manrope',
-            sans: 'Manrope'
+            mono: 'Jozsika',
+            display: 'LT Wave',
+            compact: 'Rogbold',
+            body: 'Lufga',
+            sans: 'Lufga',
+            cursive: 'Handbuck'
         },
 
     },
