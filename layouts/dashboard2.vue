@@ -31,7 +31,7 @@ await privilegeStore.getPrivileges()
             <Title>{{ title }}</Title>
         </Head>
 
-        <Body class="bg-white  dark:bg-stone-950">
+        <Body class="bg-white  dark:bg-black">
             <div class="wfull fixed z2">
                 <Navbar />
             </div>

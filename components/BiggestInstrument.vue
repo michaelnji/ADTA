@@ -5,7 +5,7 @@ import { randomInt } from 'mathjs';
 </script>
 <template>
     <div>
-        <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900">
+        <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-950">
             <h3 class="text-2xl !font-normal">Best Performer
             </h3>
             <div class=" mt4">
@@ -16,7 +16,7 @@ import { randomInt } from 'mathjs';
                             <Icon name="cryptocurrency:btc" class=" lg:hidden" size="40" />
                         </div>
                         <div>
-                            <h3 class="font-bold flex items-start gap-x-2 font-display text-2xl md:text-3xl">Bitcoin
+                            <h3 class="font-bold flex items-center gap-x-2 font-display text-3xl md:text-5xl">Bitcoin
                                 <Icon name="solar:crown-star-bold-duotone" class="text-green-500 hidden lg:block"
                                     size="30" />
                                 <Icon name="solar:crown-star-bold-duotone" class="text-green-500 lg:hidden" size="20" />
