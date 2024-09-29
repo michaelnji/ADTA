@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { randomInt } from 'mathjs';
 const fakeNews = [
     {
         title: 'Bitcoin Halving Delayed: Market Plunges',
@@ -19,7 +18,7 @@ const chosenTab = ref('politics')
         <div class="wfull">
             <h3 class="text-2xl !font-normal">Current News
             </h3>
-            <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-900 mt4">
+            <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-950 mt4">
                 <div class="max-w-xs wfull ">
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>

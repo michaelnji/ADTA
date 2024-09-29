@@ -11,7 +11,7 @@ function changeTabs(tab: string
 }
 </script>
 <template>
-    <div ref="el" class="w-full grid grid-cols-3 bg-stone-100 dark:bg-stone-950 p-3 rounded-2xl gap-x-3 relative">
+    <div ref="el" class="w-full grid grid-cols-3 bg-stone-100 dark:bg-black p-3 rounded-2xl gap-x-3 relative">
         <button class="flex z-1  cursor-pointer items-center justify-center " @click="changeTabs('politics')">
             <h2 class=" font-normal">Politics</h2>
         </button>
@@ -21,7 +21,7 @@ function changeTabs(tab: string
         <button class="flex z-1  cursor-pointer items-center justify-center " @click="changeTabs('forex')">
             <h2 class=" font-normal">Forex</h2>
         </button>
-        <div class="absolute w-1/3  top-2 bottom-2 bg-white dark:bg-stone-900 p-3 rounded-xl transition duration-300 ease-out"
+        <div class="absolute w-1/3  top-2 bottom-2 bg-white dark:bg-stone-950 p-3 rounded-xl transition duration-300 ease-out"
             :class="{
                 'translate-x-2': tab === 'politics',
                 'c': tab === 'crypto',

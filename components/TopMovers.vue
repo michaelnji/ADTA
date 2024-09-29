@@ -2,7 +2,7 @@
     <div class="wfull hmax">
         <h3 class="text-2xl !font-normal">Top Gainers</h3>
         <div class="grid lg:grid-cols-2  mt4 gap-4 md:gap-8">
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-900">
+            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-900">
+            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-900">
+            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-900">
+            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 

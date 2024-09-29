@@ -1,10 +1,10 @@
 <script setup lang="ts" generic="TData, TValue">
-import type { ColumnDef } from '@tanstack/vue-table'
+import type { ColumnDef } from '@tanstack/vue-table';
 import {
     FlexRender,
     getCoreRowModel,
     useVueTable,
-} from '@tanstack/vue-table'
+} from '@tanstack/vue-table';
 
 import {
     Table,
@@ -13,7 +13,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table'
+} from '@/components/ui/table';
 
 const props = defineProps<{
     columns: ColumnDef<TData, TValue>[]
@@ -28,7 +28,7 @@ const table = useVueTable({
 </script>
 
 <template>
-    <div class="border rounded-2xl  w-max mxa max-w-full  overflow-x-auto dark:!bg-stone-950 ">
+    <div class="border rounded-2xl  w-max mxa max-w-full  overflow-x-auto dark:!bg-black ">
         <Table class="w-max">
             <TableHeader class="!p0">
                 <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">

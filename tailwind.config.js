@@ -82,11 +82,11 @@ module.exports = {
       },
       theme: {
         fontFamily: {
-          mono: 'Jozsika',
-          display: 'LT Wave',
+          mono: 'Roboto Mono',
+          display: 'Khaviax',
           compact: 'Rogbold',
-          body: 'Lufga',
-          sans: 'Lufga',
+          body: 'Poppins',
+          sans: 'Poppins',
           cursive: 'Handbuck'
         },
 

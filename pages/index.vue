@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-    title: 'DJ Services',
-    description: "DJ services"
+    title: 'ADTA - Home',
+    description: "ADTA - Home"
 })
 
 </script>

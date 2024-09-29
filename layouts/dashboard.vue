@@ -76,7 +76,7 @@ if (profilesStore.currentProfile.is_superuser) {
             <Title>{{ title }}</Title>
         </Head>
 
-        <Body class="bg-white  dark:bg-stone-950">
+        <Body class="bg-white  dark:bg-black">
             <div class="wfull">
             </div>
             <div class="wfull flex min-h-screen">
