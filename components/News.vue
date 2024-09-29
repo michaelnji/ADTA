@@ -1,0 +1,44 @@
+<script lang="ts" setup>
+import { randomInt } from 'mathjs';
+const fakeNews = [
+    {
+        title: 'Bitcoin Halving Delayed: Market Plunges',
+        desc: "Crypto experts are speculating that the highly anticipated Bitcoin halving event has been postponed due to an unforeseen technical glitch. The news has sent shockwaves through the market, causing a sharp decline in Bitcoin's price...",
+        img: 'https://doodleipsum.com/600/avatar?bg=ceebff'
+    },
+    {
+        title: ' Elon Musk Announces New Cryptocurrency: DogeCoin 2.0',
+        desc: "In a surprise announcement, Tesla CEO Elon Musk has revealed plans to launch a new cryptocurrency, DogeCoin 2.0. The token is expected to build on the success of DogeCoin and incorporate advanced blockchain technology..",
+        img: 'https://doodleipsum.com/600/avatar?bg=ceebff'
+    },
+]
+const chosenTab = ref('politics')
+</script>
+<template>
+    <div>
+        <div class="">
+            <h3 class="text-2xl !font-normal">Current News
+            </h3>
+            <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900 mt4">
+                <div class="w-sm">
+                    <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
+                </div>
+                <div class="mt6 grid gap-3">
+                    <div class="rounded-xl transition duration-300 hover:bg-stone-800 p3 flex gap-x-3"
+                        v-for="news in fakeNews">
+                        <img :src="news.img" alt="" class="size-28 rounded-md">
+                        <div class="w-full">
+                            <h3 class="text-xl line-clamp-1 text-pretty !font-medium">{{ news.title }}
+                            </h3>
+                            <p class="sm:text-lg mt2 text-pretty font-light line-clamp-2 opacity-90 ">{{ news.desc }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<style></style>

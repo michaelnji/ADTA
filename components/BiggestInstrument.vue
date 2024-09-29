@@ -6,8 +6,9 @@ import { randomInt } from 'mathjs';
 <template>
     <div>
         <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900">
-            <h3 class="text-2xl !font-normal">Best Performer</h3>
-            <div class="md:mt6 mt4">
+            <h3 class="text-2xl !font-normal">Best Performer
+            </h3>
+            <div class=" mt4">
                 <div class="flex  justify-between flex-col sm:flex-row text-white">
                     <div class="flex items-center gap-x-4">
                         <div class="">
@@ -28,14 +29,15 @@ import { randomInt } from 'mathjs';
                         </div>
 
                     </div>
-                    <div class="flex mt4 sm:mt0 flex-col p3 rounded-xl bg-stone-900 sm:items-end gap-y-1">
+                    <div
+                        class="flex mt4 sm:mt0 flex-col p3 rounded-xl bg-stone-700 bg-opacity-15 sm:p0 sm:bg-transparent sm:items-end gap-y-1">
                         <p class="lg:text-4xl text-3xl flex  gap-x-2 font-mono font-extrabold">
                             <span> $</span>
                             <AnimatedNumbers :format="true" :amount="randomInt(60000, 68000)" />
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
-                            <p class=" text-sm p1 px3 bg-indigo-500 bg-opacity-10 rounded-md "><b
-                                    class="font-bold font-mono  text-indigo-300">68,098.90</b> <span
+                            <p class=" text-sm p1 px3 bg-lime-500 bg-opacity-10 rounded-md "><b
+                                    class="font-bold font-mono  text-lime-500">68,098.90</b> <span
                                     class="opacity-70">high</span></p>
                             <p class=" text-sm p1 px3 bg-pink-500 bg-opacity-10 rounded-md "><b
                                     class="font-bold font-mono  text-pink-500">65,098.90</b> <span
