@@ -13,7 +13,7 @@ const title = computed(() => route.meta.title ?? 'DJS')
             <Title>{{ title }}</Title>
         </Head>
 
-        <Body class="bg-stone-950 text-white w-screen">
+        <Body class="bg-stone-950 text-white ">
             <slot />
         </Body>
 

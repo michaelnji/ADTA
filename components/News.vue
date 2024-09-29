@@ -16,17 +16,17 @@ const chosenTab = ref('politics')
 </script>
 <template>
     <div>
-        <div class="">
+        <div class="wfull">
             <h3 class="text-2xl !font-normal">Current News
             </h3>
-            <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900 mt4">
-                <div class="w-sm">
+            <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-900 mt4">
+                <div class="max-w-xs wfull ">
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
-                <div class="mt6 grid gap-3">
+                <div class="mt6 grid gap-y-3">
                     <div class="rounded-xl transition duration-300 hover:bg-stone-800 p3 flex gap-x-3"
                         v-for="news in fakeNews">
-                        <img :src="news.img" alt="" class="size-28 rounded-md">
+                        <img :src="news.img" alt="" class="sm:size-28 size-20 rounded-md">
                         <div class="w-full">
                             <h3 class="text-xl line-clamp-1 text-pretty !font-medium">{{ news.title }}
                             </h3>
