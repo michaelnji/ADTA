@@ -1,8 +1,8 @@
 <template>
     <div class="wfull hmax">
-        <h3 class="text-2xl !font-normal">Top Gainers</h3>
+        <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Top Movers</h3>
         <div class="grid lg:grid-cols-2  mt4 gap-4 md:gap-8">
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
+            <div class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -31,7 +31,7 @@
                         <AnimatedNumbers :format="true" :amount="randomInt(6, 680)" />
                     </p>
                     <div class="flex gap-x-2 mt1 items-center">
-                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime-500  rounded-md "><b
+                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime  rounded-md "><b
                                 class="font-extrabold font-mono text-lime-500 sm:text-black">+0.9%</b> <span
                                 class="opacity-70"></span>
                         </p>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
+            <div class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -68,7 +68,7 @@
                         <AnimatedNumbers :format="true" :amount="randomInt(6, 680)" />
                     </p>
                     <div class="flex gap-x-2 mt1 items-center">
-                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime-500  rounded-md "><b
+                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime  rounded-md "><b
                                 class="font-extrabold font-mono text-lime-500 sm:text-black">+0.9%</b> <span
                                 class="opacity-70"></span>
                         </p>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
+            <div class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -103,7 +103,7 @@
                         <AnimatedNumbers :format="true" :amount="randomInt(6, 680)" />
                     </p>
                     <div class="flex gap-x-2 mt1 items-center">
-                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime-500  rounded-md "><b
+                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime  rounded-md "><b
                                 class="font-extrabold font-mono text-lime-500 sm:text-black">+0.9%</b> <span
                                 class="opacity-70"></span>
                         </p>
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-950">
+            <div class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
                     <div class="flex">
 
@@ -140,7 +140,7 @@
                         <AnimatedNumbers :format="true" :amount="randomInt(6, 680)" />
                     </p>
                     <div class="flex gap-x-2 mt1 items-center">
-                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime-500  rounded-md "><b
+                        <p class=" text-sm sm:p1 sm:px3 sm:bg-lime  rounded-md "><b
                                 class="font-extrabold font-mono text-lime-500 sm:text-black">+0.9%</b> <span
                                 class="opacity-70"></span>
                         </p>
