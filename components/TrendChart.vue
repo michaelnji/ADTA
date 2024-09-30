@@ -18,7 +18,7 @@ onMounted(() => { isLoading.value = false })
     <div class="dark">
         <div class="rounded-2xl  max-wfull">
             <h2 class="font-medium mb-6 text-lg"></h2>
-            <LineChart :data="data" index="time" :colors="['#b197fc']" :categories="[`price`]" :y-formatter="(tick) => {
+            <LineChart :data="data" index="time" :colors="['#a9e34b']" :categories="[`price`]" :y-formatter="(tick) => {
                 return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us', { unitDisplay: 'long' }).format(tick).toString()}`
                     : ''

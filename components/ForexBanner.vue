@@ -36,7 +36,7 @@
 </script>
 <template>
     <div>
-        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-stone-950 items-center">
+        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-stone-900 items-center">
             <div class="flex  w-max items-center rounded-2xl  bg-black p3 px-6 gap-x-3" v-for="index in indexes">
                 <h3 class="   font-display text-base sm:text-xl lg:text-2xl font-bold">{{ index.instrument }}
                 </h3>
@@ -46,7 +46,7 @@
                     </p>
                     <div class=" ml-2"
                         :class="{ 'text-teal-300': index.change > 0, 'text-pink-500': index.change < 0 }">{{
-                            `${index.change >= 0 ? '+' : ''}${index.change}` }}%</div>
+                        `${index.change >= 0 ? '+' : ''}${index.change}` }}%</div>
                 </div>
             </div>
         </div>

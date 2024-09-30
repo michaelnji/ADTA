@@ -117,7 +117,7 @@ const links = ref([
 <template>
     <div
         class=" lg:fixed hidden lg:block h-full bg-stone-800 text-stone-50  z0 overflow-y-scroll overflow-x-hidden w-13rem xl:w-15rem">
-        <div class=" p-7  bg-stone-950   min-wfull font-bold text-2xl ">
+        <div class=" p-7  bg-stone-900   min-wfull font-bold text-2xl ">
             DJ Services
 
         </div>
@@ -125,8 +125,8 @@ const links = ref([
             <ul class="grid gap-y-3 p3 mt4">
                 <div v-for="link, key in links" :key="key">
                     <NuxtLink :to="link.link" v-if="!link.isDropdown">
-                        <li class="p3 hover:bg-stone-300 hover:text-stone-950    font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
-                            :class="{ 'bg-stone-100 text-stone-950 ': route.path === link.link }">
+                        <li class="p3 hover:bg-stone-300 hover:text-stone-900    font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
+                            :class="{ 'bg-stone-100 text-stone-900 ': route.path === link.link }">
                             <Icon :name="link.icon" v-if="route.path !== link.link" size="20" />
                             <Icon :name="link.iconActive" v-if="route.path === link.link" size="20" />
                             {{ link.label }}
@@ -153,8 +153,8 @@ const links = ref([
                         <div class="mt3 ml2.5 transition-all grid gap-y-3" v-if="link.label === 'Travail'"
                             :class="{ 'visually-hidden': !showTravailDropdown }">
                             <NuxtLink v-for="innerLink, key in link.links" :key="key" :to="innerLink.link">
-                                <li class="p3 hover:bg-stone-300 hover:text-stone-950   font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
-                                    :class="{ 'bg-stone-100 text-stone-950 ': route.path === innerLink.link }">
+                                <li class="p3 hover:bg-stone-300 hover:text-stone-900   font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
+                                    :class="{ 'bg-stone-100 text-stone-900 ': route.path === innerLink.link }">
                                     <Icon :name="innerLink.icon" v-if="route.path !== innerLink.link" size="20" />
                                     <Icon :name="innerLink.iconActive" v-if="route.path === innerLink.link" size="20" />
                                     {{ innerLink.label }}
@@ -183,8 +183,8 @@ const links = ref([
                         <div class="mt3 ml2.5 transition-all grid gap-y-3"
                             :class="{ 'visually-hidden': !showEmployesDropdown }">
                             <NuxtLink v-for="innerLink, key in link.links" :key="key" :to="innerLink.link">
-                                <li class="p3 hover:bg-stone-300 hover:text-stone-950   font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
-                                    :class="{ 'hover:bg-stone-100 hover:text-stone-950': route.path === innerLink.link }">
+                                <li class="p3 hover:bg-stone-300 hover:text-stone-900   font-medium text-sm  rounded-xl transition  flex gap-x-4 items-center"
+                                    :class="{ 'hover:bg-stone-100 hover:text-stone-900': route.path === innerLink.link }">
                                     <Icon :name="innerLink.icon" v-if="route.path !== innerLink.link" size="20" />
                                     <Icon :name="innerLink.iconActive" v-if="route.path === innerLink.link" size="20" />
                                     {{ innerLink.label }}

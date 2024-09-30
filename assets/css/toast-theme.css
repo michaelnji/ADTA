@@ -57,11 +57,11 @@
 }
 
 .v-toast__item--warning {
-    @apply bg-amber-500 text-stone-950
+    @apply bg-amber-500 text-stone-900
 }
 
 .v-toast__item--error {
-    @apply bg-red-500 text-stone-950
+    @apply bg-red-500 text-stone-900
 }
 
 .v-toast__item--default {
