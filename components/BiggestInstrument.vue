@@ -30,7 +30,7 @@ import { randomInt } from 'mathjs';
 
                     </div>
                     <div
-                        class="flex mt4 sm:mt0 flex-col p3 rounded-xl border sm:p0 sm:border-none sm:items-end gap-y-1">
+                        class="flex mt4 sm:mt0 flex-col p3 rounded-xl border sm:p0 border-stone-800 sm:border-none sm:items-end gap-y-1">
                         <p class="md:text-4xl   text-3xl flex  gap-x-2 font-mono font-extrabold">
                             <span> $</span>
                             <AnimatedNumbers :format="true" :amount="randomInt(6, 680)" />

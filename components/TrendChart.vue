@@ -6,8 +6,7 @@ const isLoading = ref(true)
 const data: { price: number, time: string }[] = []
 for (let i = 0; i < 14; i++) {
     data.push({
-        "price": isPrime(i) || isPrime(i * i) ? randomInt(randomInt(60000, i + 65000), randomInt(68000, 68000 * i + 1 / i * 100
-        )) : randomInt(randomInt(50000, i + 54000), randomInt(55000, 60000)),
+        "price": isPrime(i) ? i * randomInt(1, i + 1) : i * randomInt(1, i + 1),
         time: format(add(new Date, { minutes: i }), 'hh:mm')
     },)
 }

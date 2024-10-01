@@ -1,27 +1,20 @@
 <script setup lang="ts">
-
-const data = [
-    { name: 'Jan', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Feb', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Mar', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Apr', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'May', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jun', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jul', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'May', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jun', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jul', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'May', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jun', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-    { name: 'Jul', volume: Math.floor(Math.random() * 2000) + 500, sell: Math.floor(Math.random() * 2000) + 500 },
-]
+import { add, format } from 'date-fns';
+import { cos, floor, isPrime, log, randomInt, sin } from 'mathjs';
+const data: { volume: number, time: string }[] = []
+for (let i = 0; i < 14; i++) {
+    data.push({
+        "volume": isPrime(i) ? i * randomInt(1, i + 1) - 2 : randomInt(1, i + 1) * 2,
+        time: format(add(new Date, { minutes: i }), 'hh:mm')
+    },)
+}
 </script>
 
 <template>
-    <div>
+    <div class="dark">
         <h3 class="text-lg  !font-normal  opacity-80">Volume Traded
         </h3>
-        <BarChart :show-grid-line="false" :show-x-axis="false" :data="data" index="name" :colors="['#aaa']"
+        <BarChart :show-grid-line="false" :show-x-axis="false" :data="data" index="volume" :colors="['#aaa']"
             :rounded-corners="6" :categories="['volume']" :y-formatter="(tick, i) => {
                 return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`

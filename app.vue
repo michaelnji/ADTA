@@ -2,11 +2,9 @@
 import "vue-data-ui/style.css";
 import '~/assets/css/toast-theme.css';
 import '~/assets/css/animations.css';
-const colorMode = useColorMode()
 const { progress, isLoading, error } = useLoadingIndicator({
   throttle: 400
 })
-onMounted(() => { colorMode.preference = 'light' })
 
 </script>
 <template>
