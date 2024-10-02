@@ -51,12 +51,19 @@ export default defineNuxtConfig({
         "solar:widget-bold",
         "solar:settings-minimalistic-linear",
         "solar:settings-minimalistic-bold",
-
+        "solar:chart-2-bold",
+        "solar:graph-new-linear",
+        "solar:course-up-linear",
         "solar:branching-paths-up-linear",
         "solar:branching-paths-up-bold",
 
 
       ],
+    },
+  },
+  nitro: {
+    experimental: {
+      websocket: true
     },
   },
   // supabase: {
@@ -83,7 +90,14 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     marketauxKey: '',
-    marketauxUrl: ''
+    marketauxUrl: '',
+    twelveKey: "",
+    public: {
+      finnhubUrl: "",
+      finnhubKey: '',
+      twelveUrl: "",
+    }
+
   },
   vue: {
     compilerOptions: {

@@ -1,8 +1,13 @@
 <script setup>
+import { useFxPairStore } from '~/stores/fxpairs';
+
 const route = useRoute()
-
 const title = computed(() => route.meta.title ?? 'DJS')
-
+const fxStore = useFxPairStore()
+onMounted(async () => {
+    await fxStore.fetchFxPairs()
+    console.log(fxStore.fxPairs)
+})
 </script>
 
 <template>

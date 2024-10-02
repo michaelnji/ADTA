@@ -1,17 +1,14 @@
 import { format } from 'date-fns'
+import type { CountryData, FxPairsData } from '~/server/types/fx.types'
 import type { News } from '~/server/types/news.types'
 import { sendServerResponse } from '~/server/utils/response'
 
 export default eventHandler(async (event) => {
     try {
-        const apiKey = useRuntimeConfig().marketauxKey
-        const base = useRuntimeConfig().marketauxUrl
-        const body = await readBody(event)
-        const today = format(new Date(), 'yyyy-MM-dd')
-        const limit = body.limit ?? 2
-        const searchString = getNewsSearchString(body.category)
-        const url = `${base}news/all?language=en&limit=${limit}&exclude_domains=medium.com&published_on=${today}&search=${searchString}&api_token=${apiKey}`
-        const resp = await $fetch<News>(url, {
+
+        const base = useRuntimeConfig().public.twelveUrl
+        const url = `${base}/forex_pairs`
+        const resp = await $fetch<FxPairsData>(url, {
             onResponseError({ response }) {
                 throw new Error(response._data)
             }
