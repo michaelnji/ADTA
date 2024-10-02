@@ -2,7 +2,6 @@ import { isYesterday } from 'date-fns'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { ServerResponse, StatusCode } from '~/server/types'
 import type { Country, FxPair } from '~/server/types/fx.types'
-import type { NewsArticles } from '~/server/types/news.types'
 import { getItemValue, getOrSetItem, setItemValue } from '~/utils/dbManager'
 import { strategies } from '../data/settings'
 export const useFxPairStore = defineStore('FX_PAIRS', () => {
