@@ -6,10 +6,8 @@ export default defineConfig({
         fontFamily: {
             mono: 'Roboto Mono',
             display: 'Khaviax',
-            compact: 'Rogbold',
             body: 'Poppins',
             sans: 'Poppins',
-            cursive: 'Handbuck'
         },
 
     },

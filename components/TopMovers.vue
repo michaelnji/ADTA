@@ -1,6 +1,11 @@
+<script lang="ts" setup>
+import { randomInt } from 'mathjs';
+
+
+</script>
 <template>
     <div class="wfull hmax">
-        <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Top Movers</h3>
+        <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Top Gainers</h3>
         <div class="grid lg:grid-cols-2  mt4 gap-4 md:gap-8">
             <div class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
@@ -151,11 +156,5 @@
         </div>
     </div>
 </template>
-
-<script lang="ts" setup>
-import { randomInt } from 'mathjs';
-
-
-</script>
 
 <style></style>

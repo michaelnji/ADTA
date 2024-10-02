@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxt/fonts",
     "@nuxt/icon",
-    "@morev/vue-transitions/nuxt",
+    // "@morev/vue-transitions/nuxt",
     "shadcn-nuxt",
     "@nuxtjs/tailwindcss",
     // "@nuxtjs/supabase",
@@ -49,7 +49,21 @@ export default defineNuxtConfig({
         "solar:graph-bold",
         "solar:widget-linear",
         "solar:widget-bold",
+        "solar:settings-minimalistic-linear",
+        "solar:settings-minimalistic-bold",
+        "solar:chart-2-bold",
+        "solar:graph-new-linear",
+        "solar:course-up-linear",
+        "solar:branching-paths-up-linear",
+        "solar:branching-paths-up-bold",
+
+
       ],
+    },
+  },
+  nitro: {
+    experimental: {
+      websocket: true
     },
   },
   // supabase: {
@@ -71,6 +85,20 @@ export default defineNuxtConfig({
   //   },
   //   types: "./types/database.types.ts",
   // },
+  devServer: {
+    port: 8000
+  },
+  runtimeConfig: {
+    marketauxKey: '',
+    marketauxUrl: '',
+    twelveKey: "",
+    public: {
+      finnhubUrl: "",
+      finnhubKey: '',
+      twelveUrl: "",
+    }
+
+  },
   vue: {
     compilerOptions: {
       isCustomElement: ((tag) => tag.includes('layflags-rolling-number'))

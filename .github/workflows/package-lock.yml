@@ -1,0 +1,35 @@
+name: Generate and Commit package-lock.json
+
+on:
+  push:
+    branches: [dev]
+    paths: 
+      - bun.lockb
+
+jobs:
+  generate-package-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          token: ${{ secrets.Z_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Generate package-lock.json
+        run: npm install --force --package-lock-only
+
+      - name: Add package-lock.json
+        run: git add package-lock.json
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit -m "Generated package-lock.json"
+
+      - name: Push changes
+        run: git push
