@@ -2,7 +2,7 @@ name: Generate and Commit package-lock.json
 
 on:
   push:
-    branches: [dev]
+    branches: [development]
     paths: 
       - bun.lockb
 
