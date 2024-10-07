@@ -1,73 +1,169 @@
 <script lang="ts" setup>
-import { randomInt } from 'mathjs';
-import WebSocket from 'isomorphic-ws';
-import { format } from 'date-fns';
-const isConnected = ref(false);
-const config = useRuntimeConfig()
-const url = `${config.public.finnhubUrl}?token=${config.public.finnhubKey}`
-type TimeSeries = {
-    price: number, time: string
-}
+import { number } from "mathjs";
+import { isSaturday, isWeekend, subDays } from "date-fns";
+import { format } from "date-fns/format";
+import WebSocket from "isomorphic-ws";
+import type { ServerResponse, StatusCode } from "~/server/types";
+import type { Timeseries } from "~/server/types/fx.types";
+import type { Quote12, Stock } from "~/types/index.types";
+type TS = {
+    price: number;
+    time: string;
+};
 type VolumeSeries = {
-    volume: number, time: string
-}
-const timeseries = ref<TimeSeries[]>([{ price: 224.6, time: format(Date.now(), 'hh:mm:ss').toString() }])
-const timeseriesTemp = ref<TimeSeries[]>([])
+    volume: number;
+    time: string;
+};
+const isConnected = ref(false);
+const config = useRuntimeConfig();
+const url = `${config.public.finnhubUrl}?token=${config.public.finnhubKey}`;
+const props = defineProps<{
+    stock: Stock;
+}>();
+const timeseries = ref<TS[]>([]);
 
-const volumeseries = ref<VolumeSeries[]>([{ volume: 224.6, time: format(Date.now(), 'hh:mm:ss').toString() }])
-
-const volumeseriesTemp = ref<VolumeSeries[]>([])
-
-const currentPrice = computed(() => timeseries.value.length > 0 ? timeseries.value[timeseries.value.length - 1].price : timeseries.value[0].price)
+const volumeseries = ref<VolumeSeries[]>([]);
+const isLoading = ref(true);
+const currentPrice = ref("");
 const ws = new WebSocket(url);
-
+const quote = ref<Quote12>();
 ws.onopen = function open() {
-    ws.send(JSON.stringify({
-        'type': 'subscribe', 'symbol': 'BINANCE:BTCUSDT'
-    }))
+    ws.send(
+        JSON.stringify({
+            type: "subscribe",
+            symbol: props.stock.displaySymbol,
+        }),
+    );
 
-    isConnected.value = true
-
+    isConnected.value = true;
 };
 
 ws.onclose = function close() {
-    isConnected.value = false
-
+    isConnected.value = false;
 };
 
 ws.onmessage = function incoming(data) {
-    if (data.type !== 'heartbeat') {
-        const info = JSON.parse(data.data.toString()).data[0]
-        timeseriesTemp.value = [...timeseriesTemp.value, { price: info.p, time: format(new Date(info.t), 'hh:mm:ss').toString() }]
-        volumeseriesTemp.value = [...volumeseriesTemp.value, { volume: info.v, time: format(new Date(info.t), 'hh:mm:ss').toString() }]
-
-        if (timeseriesTemp.value.length > 6) {
-            timeseries.value = [...timeseries.value, ...timeseriesTemp.value]
-            volumeseries.value = [...volumeseries.value, ...volumeseriesTemp.value]
-            timeseriesTemp.value = []
-            volumeseriesTemp.value = []
-        }
-        if (timeseries.value.length > 100) {
-            timeseries.value = timeseries.value.filter((x, i) => i > 3)
-            volumeseries.value = volumeseries.value.filter((x, i) => i > 3)
+    if (JSON.parse(data.data.toString()).data) {
+        const info = JSON.parse(data.data.toString()).data[0];
+        if (info) {
+            currentPrice.value = `${info.p}`;
         }
     }
     setTimeout(function timeout() {
-        ws.send(JSON.stringify({ 'type': 'heartbeat', 'timestamp': Date.now() }));
+        ws.send(JSON.stringify({ type: "heartbeat", timestamp: Date.now() }));
     }, 500);
 };
 const unsubscribe = (symbol: string) => {
-    ws.send(JSON.stringify({ 'type': 'unsubscribe', 'symbol': symbol }))
-}
+    ws.send(JSON.stringify({ type: "unsubscribe", symbol: symbol }));
+};
+onMounted(async () => {
+    try {
+        const now = new Date();
+        const resp = await $fetch<ServerResponse<StatusCode, Quote12>>(
+            "/api/stocks/quote",
+            {
+                method: "POST",
+                body: {
+                    displaySymbol: props.stock.displaySymbol,
+                },
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(response._data.message, 500));
+                },
+            },
+        );
+        if (resp.ok && resp.data) {
+            quote.value = resp.data;
+        }
+        if (
+            (!isWeekend(now) && quote.value?.is_market_open) ||
+            (!isWeekend(now) && !quote.value?.is_market_open && now.getHours() > 15)
+        ) {
+            const resp = await $fetch<
+                ServerResponse<StatusCode, Timeseries["values"]>
+            >("/api/timeseries/stock", {
+                method: "POST",
+                body: {
+                    symbol: props.stock.displaySymbol,
+                    interval: "5min",
+                    // outputsize: 20000,
+                    date: "today",
+                },
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(response._data.message, 500));
+                },
+            });
+            if (resp.ok && resp.data) {
+                const reversedData = resp.data.reverse();
+                for (const element of reversedData) {
+                    if (reversedData.indexOf(element) % 5 === 0) {
+                        const v = {
+                            time: format(element.datetime, "hh:mm aaa"),
+                            volume: Number.parseInt(element.volume),
+                        };
 
-ws.onerror = ((e) => console.log(e))
+                        volumeseries.value = [...volumeseries.value, v];
+                    }
+
+                    const s = {
+                        time: format(element.datetime, "hh:mm aaa"),
+                        price: Number.parseFloat(element.close),
+                    };
+
+                    timeseries.value = [...timeseries.value, s];
+                }
+                currentPrice.value =
+                    timeseries.value[timeseries.value.length - 1].price.toString();
+                isLoading.value = false;
+            }
+        } else if (isWeekend(now)) {
+            const resp = await $fetch<
+                ServerResponse<StatusCode, Timeseries["values"]>
+            >("/api/timeseries/stock", {
+                method: "POST",
+                body: {
+                    symbol: props.stock.displaySymbol,
+                    interval: "5min",
+                    // outputsize: 20000,
+                    date: isSaturday(now)
+                        ? format(new Date(subDays(now, 1).setHours(7)), "yyyy-LL-dd")
+                        : format(new Date(subDays(now, 2).setHours(7)), "yyyy-LL-dd"),
+                },
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(response._data.message, 500));
+                },
+            });
+
+            if (resp.ok && resp.data) {
+                const reversedData = resp.data.reverse();
+                for (const element of reversedData) {
+                    if (reversedData.indexOf(element) % 60 === 0) {
+                        const v = {
+                            time: format(element.datetime, "hh:mm aaa"),
+                            volume: Number.parseInt(element.volume),
+                        };
+
+                        volumeseries.value = [...volumeseries.value, v];
+                    }
+                    const s = {
+                        time: format(element.datetime, "hh:mm aaa"),
+                        price: Number.parseInt(element.close),
+                    };
+
+                    timeseries.value = [...timeseries.value, s];
+                }
+                currentPrice.value =
+                    timeseries.value[timeseries.value.length - 1].price.toString();
+                isLoading.value = false;
+            }
+        } else {
+            isLoading.value = false;
+        }
+    } catch (error) { }
+});
 onBeforeUnmount(() => {
-    unsubscribe("AAPL")
-    unsubscribe("BINANCE:BTCUSDT")
-    ws.close()
-
-})
-
+    unsubscribe(props.stock.displaySymbol ?? "");
+    // ws.close()
+});
 </script>
 <template>
     <div>
@@ -80,65 +176,105 @@ onBeforeUnmount(() => {
 
                         <div>
                             <h3 class="font-bold flex items-center gap-x-2 font-display text-4xl sm:text-4xl  ">
-                                BTC/USD
+                                {{ stock.displaySymbol }}
+
 
 
                             </h3>
-                            <div class="flex lg:mt1 items-center gap-x-2">
-                                <p class=" text-sm   opacity-80">BTC/USDT</p> -
-                                <p class=" text-sm   opacity-80">Binance Exchange</p>
+                            <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
+                                <p class=" text-sm   opacity-80">{{ quote?.name }}</p>
+                                <p class=" text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}</p>
+
+                            </div>
+                            <div class="flex lg:mt1 items-center gap-x-2" v-if="isLoading">
+                                <Skeleton v-if="isLoading" class=" h4 w-15 bg-stone-900 rounded-md "> </Skeleton> -
+                                <Skeleton v-if="isLoading" class=" h4 w-15 bg-stone-900 rounded-md "> </Skeleton>
 
                             </div>
                         </div>
 
                     </div>
-                    <div
-                        class="flex mt4 sm:mt0 flex-col p3 rounded-xl border sm:p0 border-stone-800 sm:border-none sm:items-end gap-y-1">
-                        <p class="md:text-4xl   text-3xl flex  gap-x-2 font-mono font-extrabold">
+                    <div class="flex mt4 sm:mt0 flex-col  sm:items-end gap-y-1">
+                        <p class="md:text-4xl   text-3xl 2xl:text-5xl flex items-center  gap-x-2 font-medium">
                             <span> $</span>
-                            <AnimatedNumbers :format="true" :amount="currentPrice" :is-decimal="true" />
+                            <AnimatedNumbers :format="true" :amount="Number.parseFloat(currentPrice)"
+                                :is-decimal="true" />
+
+                        <p v-if="!isLoading" :class="{
+                            ' !text-pink ': Number.parseFloat(quote?.percent_change ?? '') < 0,
+                            ' !text-lime ': Number.parseFloat(quote?.percent_change ?? '') >= 0,
+
+                        }" class=" text-sm sm:text-base 2xl:text-xl "><b class="font-extrabold font-mono  "><span
+                                    v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
+                                        Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                    }}%</b> <span class="opacity-70"></span>
+                        </p>
+
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
-                            <p class=" text-sm p1 px3 bg-lime-500 bg-opacity-10 rounded-md "><b
-                                    class="font-bold font-mono  text-lime-500">688.90</b> </p>
-                            <p class=" text-sm p1 px3 bg-pink-500 bg-opacity-10 rounded-md "><b
-                                    class="font-bold font-mono  text-pink-500">68.90</b> </p>
+                            <p v-if="!isLoading" class=" text-sm p1 px3 bg-lime-500 bg-opacity-10 rounded-md "><b
+                                    class="font-bold font-mono  text-lime-500">{{ Number.parseFloat(quote?.high ??
+                                        '').toFixed(3) }}</b> </p>
+                            <Skeleton v-if="isLoading" class=" h7 w-15 bg-lime-950 rounded-md "> </Skeleton>
+                            <Skeleton v-if="isLoading" class=" h7 w-15 bg-pink-950 rounded-md "> </Skeleton>
+
+                            <p v-if="!isLoading" class=" text-sm p1 px3 bg-pink-500 bg-opacity-10 rounded-md "><b
+                                    class="font-bold font-mono  text-pink-500">{{ Number.parseFloat(quote?.low ??
+                                        '').toFixed(3) }}</b> </p>
                         </div>
                     </div>
                 </div>
                 <div class="mt3 md:mt6 ">
-                    <TrendChart :data="timeseries" height="15rem" width="100%" />
-                    <div class="mt16 grid md:grid-cols-2 md:gap-8 xl:gap-12">
-                        <div class="">
-                            <VolumeChart :data="volumeseries" height="100%" width="100%" />
+                    <TrendChart title="price" v-if="!isLoading" :data="timeseries" height="17rem" width="100%" />
+                    <Skeleton v-if="isLoading" class=" h-17rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
+                    <div class="mt16 grid md:grid-cols-2 gap-4 md:gap-x-12">
+                        <VolumeChart v-if="!isLoading" :data="volumeseries" height="20rem" width="100%" />
+
+                        <Skeleton v-if="isLoading" class=" h-20rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
+
+                        <div v-if="isLoading" class="!mt12 grid  gap-6 ">
+                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+
+                            </Skeleton>
+                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+
+                            </Skeleton>
+                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+
+                            </Skeleton>
+
                         </div>
-                        <div class="!mt12 grid  gap-6 ">
-                            <div class="p3 rounded-xl flex gap-x-3 bg-stone-100 bg-opacity-5 items-center">
+                        <div v-if="!isLoading" class="!mt12 grid  gap-6 ">
+                            <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
                                 <div class="size-12 text-lime grid place-items-center">
                                     <Icon name="solar:chart-2-bold" size="30" />
                                 </div>
                                 <div>
-                                    <h3 class="  text-base">Float Index</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">6,550,098.90</b>
+                                    <h3 class="  text-sm">Float Index</h3>
+                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">{{ stock.float
+                                            }}</b>
                                     </p>
                                 </div>
                             </div>
-                            <div class="p3 rounded-xl flex gap-x-3 bg-stone-100 bg-opacity-5 items-center">
+                            <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
                                 <div class="size-12 text-lime grid place-items-center">
                                     <Icon name="solar:graph-new-linear" size="30" />
                                 </div>
                                 <div>
-                                    <h3 class="  text-base">% up today</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">65.0</b></p>
+                                    <h3 class="  text-sm">Change</h3>
+                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500"><span
+                                                v-if="Number.parseFloat(quote?.percent_change ?? '0') >= 0">+</span>{{
+                                                    Number.parseFloat(quote?.percent_change ?? '0').toFixed(2) }}</b></p>
                                 </div>
                             </div>
-                            <div class="p3 rounded-xl flex gap-x-3 bg-stone-100 bg-opacity-5 items-center">
+                            <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
                                 <div class="size-12 text-lime grid place-items-center">
                                     <Icon name="solar:course-up-linear" size="30" />
                                 </div>
                                 <div>
-                                    <h3 class="  text-base">Sentiment</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">Bullish</b></p>
+                                    <h3 class="  text-sm">Sentiment</h3>
+                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">{{
+                                        stock.sentiment }}</b></p>
                                 </div>
                             </div>
                         </div>

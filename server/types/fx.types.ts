@@ -115,3 +115,29 @@ export interface Country {
     capital: string;
     currency: string;
 }
+
+export interface Timeseries {
+    meta: Meta;
+    values: Value[];
+    status: string;
+    message?: string
+}
+
+export interface Meta {
+    symbol: string;
+    interval: string;
+    currency: string;
+    exchange_timezone: string;
+    exchange: string;
+    mic_code: string;
+    type: string;
+}
+
+export interface Value {
+    datetime: Date;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+}

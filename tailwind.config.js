@@ -83,7 +83,7 @@ module.exports = {
       theme: {
         fontFamily: {
           mono: 'Roboto Mono',
-          display: 'Khaviax',
+          display: 'Clash Display',
           body: 'Poppins',
           sans: 'Poppins',
         },
