@@ -55,49 +55,27 @@ function handleLegendItemClick(d: BulletLegendItemInterface, i: number) {
   <div :class="cn('w-full h-[400px] flex flex-col items-end', $attrs.class ?? '')">
     <ChartLegend v-if="showLegend" v-model:items="legendItems" @legend-item-click="handleLegendItemClick" />
 
-    <VisXYContainer
-      :margin="{ left: 20, right: 20 }"
-      :data="data"
-      :style="{ height: isMounted ? '100%' : 'auto' }"
-    >
-      <ChartCrosshair v-if="showTooltip" :colors="colors" :items="legendItems" :index="index" :custom-tooltip="customTooltip" />
+    <VisXYContainer :margin="{ left: 20, right: 20 }" :data="data" :style="{ height: isMounted ? '100%' : 'auto' }">
+      <ChartCrosshair v-if="showTooltip" :colors="colors" :items="legendItems" :index="index"
+        :custom-tooltip="customTooltip" />
 
       <template v-for="(category, i) in categories" :key="category">
-        <VisLine
-          :x="(d: Data, i: number) => i"
-          :y="(d: Data) => d[category]"
-          :curve-type="curveType"
-          :color="colors[i]"
+        <VisLine :x="(d: Data, i: number) => i" :y="(d: Data) => d[category]" :curve-type="curveType" :color="colors[i]"
           :attributes="{
             [Line.selectors.line]: {
               opacity: legendItems.find(item => item.name === category)?.inactive ? filterOpacity : 1,
             },
-          }"
-        />
+}" />
       </template>
 
-      <VisAxis
-        v-if="showXAxis"
-        type="x"
-        :tick-format="xFormatter ?? ((v: number) => data[v]?.[index])"
-        :grid-line="false"
-        :tick-line="false"
-        tick-text-color="hsl(var(--vis-text-color))"
-      />
-      <VisAxis
-        v-if="showYAxis"
-        type="y"
-        :tick-line="false"
-        :tick-format="yFormatter"
-        :domain-line="false"
-        :grid-line="showGridLine"
-        :attributes="{
+      <VisAxis v-if="showXAxis" type="x" :tick-format="xFormatter ?? ((v: number) => data[v]?.[index])"
+        :grid-line="false" :tick-line="false" tick-text-color="hsl(var(--vis-text-color))" />
+      <VisAxis v-if="showYAxis" type="y" :tick-line="false" :tick-format="yFormatter" :domain-line="false"
+        :grid-line="showGridLine" :attributes="{
           [Axis.selectors.grid]: {
             class: 'text-muted',
           },
-        }"
-        tick-text-color="hsl(var(--vis-text-color))"
-      />
+        }" tick-text-color="hsl(var(--vis-text-color))" />
 
       <slot />
     </VisXYContainer>

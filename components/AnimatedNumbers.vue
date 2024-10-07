@@ -9,8 +9,8 @@ const props = defineProps<{
     <ClientOnly>
         <div>
             <div v-if="isDecimal" class="flex">
-                <Counter :format="true" :amount="Number.parseInt(amount.toString().split('.')[0])" />.
-                <Counter :format="false" :amount="Number.parseInt(amount.toString().split('.')[1])" />
+                <Counter :format="true" :amount="Number.parseFloat(amount.toString().split('.')[0])" />.
+                <Counter :format="false" :amount="Number.parseFloat(amount.toFixed(3).split('.')[1])" />
             </div>
             <div v-if="!isDecimal">
                 <Counter :format="format" :amount="amount" />

@@ -89,15 +89,25 @@ export default defineNuxtConfig({
     port: 8000
   },
   runtimeConfig: {
+    supabaseJwt: '',
+    supabaseBotEmail: '',
+    supabaseBotPassword: '',
+    supabaseBotId: '',
+    honeybadgerKey: '',
+    supabaseKey: '',
+    supabaseUrl: "",
     marketauxKey: '',
     marketauxUrl: '',
+    fmpUrl: '', fmpKey: "",
     twelveKey: "",
+    atheleiaKey: "",
     public: {
       finnhubUrl: "",
+      finnhubwsUrl: "",
       finnhubKey: '',
       twelveUrl: "",
+      tickerUrl: ""
     }
-
   },
   vue: {
     compilerOptions: {

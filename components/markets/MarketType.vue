@@ -16,12 +16,12 @@ function changeTabs(tab: string
             class="opacity-70 transition duration-300 hover::opacity-100" @click="changeTabs('forex')">
             <Icon name="solar:banknote-2-linear" size="24" />
         </button>
-        <button :class="{ ' !text-lime-500 !opacity-100': tab === 'stocks' }"
+        <button :disabled="true" :class="{ ' !text-lime-500 !opacity-100': tab === 'stocks' }"
             class="opacity-70 transition duration-300 hover::opacity-100" @click="changeTabs('stocks')">
             <Icon name="solar:buildings-2-linear" size="24" />
 
         </button>
-        <button :class="{ ' !text-lime-500 !opacity-100': tab === 'crypto' }"
+        <button :disabled="true" :class="{ ' !text-lime-500 !opacity-100': tab === 'crypto' }"
             class="opacity-70 transition duration-300 hover::opacity-100" @click="changeTabs('crypto')">
             <Icon name="cryptocurrency:eth" size="24" />
 

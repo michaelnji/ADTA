@@ -1,9 +1,10 @@
 
-import type { CountryData, FxPairsData } from './fx.types.js'
+import type { Quote12, Stock } from '~/types/index.types.js'
+import type { CountryData, FxPairsData, Timeseries } from './fx.types.js'
 import type { News } from './news.types.ts'
 export type StatusCode = 200 | 400 | 404 | 403 | 500 | 401
 export type ErrorCodes = (400 | 404 | 403 | 500 | 401)
-export type ServerData = News["data"] | CountryData["data"] | FxPairsData["data"]
+export type ServerData = News["data"] | CountryData["data"] | FxPairsData["data"] | Timeseries["values"] | Stock[] | Quote12
 export interface ServerResponse<Status extends StatusCode, Data extends ServerData> {
     status: Status
     message?: string

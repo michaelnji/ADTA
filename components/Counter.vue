@@ -6,9 +6,11 @@ const props = defineProps<{
     amount: number
 }>()
 const numToArray = computed(() => {
-    const formattedNum = Intl.NumberFormat('cm', { minimumSignificantDigits: 2 }).format(props.amount).toString()
+    const formattedNum = Intl.NumberFormat('cm', { minimumSignificantDigits: 3 }).format(props.amount).toString()
     return formattedNum.split(',')
 })
+
+
 </script>
 <template>
     <div v-if="!format">

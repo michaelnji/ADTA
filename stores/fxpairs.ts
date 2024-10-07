@@ -36,6 +36,10 @@ export const useFxPairStore = defineStore('FX_PAIRS', () => {
         }
 
     }
+    async function getFxPairsPrice() {
+        const data = fxPairs.value
+
+    }
     return { fxPairs, fetchFxPairs }
 })
 

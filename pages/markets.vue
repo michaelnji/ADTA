@@ -2,8 +2,8 @@
 // import ConnectionClient from '~/components/Connection.client.vue';
 
 definePageMeta({
-    title: 'ADTA - Home',
-    description: "ADTA - Home"
+    title: 'ADTA - Markets',
+    description: "ADTA - Markets"
 })
 
 </script>
@@ -17,7 +17,7 @@ definePageMeta({
             </div>
             <div class="flex-grow-1">
                 <div class="flex flex-col gap-y-12">
-                    <Connection />
+
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { LineChart } from '@/components/ui/chart-line'
+import { CurveType } from '@unovis/ts'
 import { add, format } from 'date-fns';
 import { cos, floor, isPrime, log, randomInt, sin } from 'mathjs';
 const props = defineProps<{
@@ -17,8 +18,8 @@ onMounted(() => { isLoading.value = false })
     <div class="dark">
         <div class="rounded-2xl  max-wfull">
             <h2 class="font-medium mb-6 text-lg"></h2>
-            <LineChart :style="style" :data="data" index="time" :colors="['#a9e34b']" :categories="[`price`]"
-                :y-formatter="(tick) => {
+            <LineChart :style="style" :curve-type="CurveType.BasisOpen" :show-grid-line="false" :data="data"
+                index="time" :colors="['#a9e34b']" :categories="[`price`]" :y-formatter="(tick) => {
                 return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us', { unitDisplay: 'long' }).format(tick).toString()}`
                     : ''

@@ -29,12 +29,12 @@ onMounted(async () => {
 </script>
 <template>
     <div>
-        <div class="bg-lime text-pretty wfull p6 text-black rounded-2xl ">
+        <div class="bg-lime text-pretty wfull transition-all duration-300 p6 text-black rounded-2xl ">
             <div v-if="!isLoading && quoteDetail">
                 <div class="mb3">
                     <Icon name="solar:crown-minimalistic-linear" size="50" />
                 </div>
-                <p class="font-display text-3xl sm:text-5xl font-bold">
+                <p class="font-display text-3xl sm:text-5xl font-medium">
                     {{ quoteDetail.quote }}
 
                 </p>
