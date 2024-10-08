@@ -141,3 +141,37 @@ export interface Value {
     close: string;
     volume: string;
 }
+
+export interface MarketStatus {
+    afterHours: boolean;
+    currencies: Currencies;
+    earlyHours: boolean;
+    exchanges: Exchanges;
+    indicesGroups: IndicesGroups;
+    market: string;
+    serverTime: Date;
+}
+
+export interface Currencies {
+    crypto: string;
+    fx: string;
+}
+
+export interface Exchanges {
+    nasdaq: string;
+    nyse: string;
+    otc: string;
+}
+
+export interface IndicesGroups {
+    sAndP: string;
+    societeGenerale: string;
+    msci: string;
+    ftseRussell: string;
+    mstar: string;
+    mstarc: string;
+    cccy: string;
+    cgi: string;
+    nasdaq: string;
+    dowJones: string;
+}

@@ -30,13 +30,13 @@ onMounted(async () => {
 </script>
 <template>
     <div class="wfull hmax">
-        <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Runner-ups</h3>
+        <h3 class="text-lg  !font-normal  opacity-80">Runner-ups</h3>
         <div class="grid sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3  mt4 gap-4 md:gap-8">
-            <Skeleton v-if="isLoading" v-for="i in [1, 2, 3]" class="p8 rounded-2xl bg-stone-900">
+            <Skeleton v-if="isLoading" v-for="i in [1, 2, 3]" class="p6 rounded-2xl bg-stone-900">
 
             </Skeleton>
             <div v-if="!isLoading" v-for="stock in top"
-                class="flex  justify-between  text-white py3 sm:p6 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
+                class="flex  justify-between  text-white py3 sm:p3 sm:rounded-2xl sm:bg-stone-900 !bg-opacity-60">
                 <div class="flex items-center gap-x-4">
                     <!-- <div class="flex">
 
@@ -59,7 +59,7 @@ onMounted(async () => {
 
                 </div>
                 <div class="">
-                    <p class="text-lg flex  gap-x-1  font-mono font-bold ">
+                    <p class="text-lg flex  gap-x-1 font-bold ">
                         <span> $</span>
                         <AnimatedNumbers :format="true" :amount="Number.parseFloat(stock.open)" />
                     </p>
@@ -68,7 +68,7 @@ onMounted(async () => {
                             ' !text-pink ': Number.parseFloat(stock.percent_change ?? '') < 0,
                             ' !text-lime ': Number.parseFloat(stock.percent_change ?? '') >= 0,
 
-                        }" class=" text-sm "><b class="font-extrabold font-mono  "><span
+}" class=" text-sm "><b class="font-medium   "><span
                                     v-if="Number.parseFloat(stock.percent_change ?? '') >= 0">+</span>{{
                                         Number.parseFloat(stock.percent_change ?? '').toFixed(3)
                                     }}%</b> <span class="opacity-70"></span>

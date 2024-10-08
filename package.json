@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@alpacahq/alpaca-trade-api": "^3.1.2",
     "@layflags/rolling-number": "^1.0.0",
     "@morev/vue-transitions": "^3.0.2",
     "@nuxt/fonts": "^0.7.1",
@@ -46,6 +47,7 @@
     "tailwind-merge": "^2.4.0",
     "tailwindcss": "^3.4.7",
     "tailwindcss-animate": "^1.0.7",
+    "typewriter-vue": "^0.5.19",
     "universal-cookie": "^7",
     "unoid": "^1.0.0",
     "v-calendar": "^3.1.2",

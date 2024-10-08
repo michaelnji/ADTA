@@ -20,6 +20,7 @@ const url = `${config.public.finnhubUrl}?token=${config.public.finnhubKey}`;
 const props = defineProps<{
     stock: Stock;
 }>();
+const stockStore = useStockstore()
 const timeseries = ref<TS[]>([]);
 
 const volumeseries = ref<VolumeSeries[]>([]);
@@ -58,6 +59,7 @@ const unsubscribe = (symbol: string) => {
 };
 onMounted(async () => {
     try {
+        $toast.info(stockStore.MarketStatus?.afterHours.toString() ?? '')
         const now = new Date();
         const resp = await $fetch<ServerResponse<StatusCode, Quote12>>(
             "/api/stocks/quote",
@@ -168,59 +170,76 @@ onBeforeUnmount(() => {
 <template>
     <div>
         <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900 !bg-opacity-60">
-            <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Best Performer
+            <h3 class="text-lg !font-normal  opacity-80">Best Performer
             </h3>
             <div class=" mt4">
                 <div class="flex  justify-between flex-col sm:flex-row text-white">
                     <div class="flex items-center gap-x-4">
 
                         <div>
-                            <h3 class="font-bold flex items-center gap-x-2 font-display text-4xl sm:text-4xl  ">
+                            <h3 class="font-bold flex items-center gap-x-2 font-display text-4xl  ">
                                 {{ stock.displaySymbol }}
 
 
 
                             </h3>
+                            <p v-if="!isLoading" :class="{
+                                ' !text-pink ': Number.parseFloat(quote?.percent_change ?? '') < 0,
+                                ' !text-lime ': Number.parseFloat(quote?.percent_change ?? '') >= 0,
+
+                            }" class=" text-sm  my1"><b class="font-extrabold font-mono  "><span
+                                        v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
+                                            Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                        }}%</b> <span class="opacity-70"></span>
+                            </p>
                             <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
                                 <p class=" text-sm   opacity-80">{{ quote?.name }}</p>
                                 <p class=" text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}</p>
 
                             </div>
-                            <div class="flex lg:mt1 items-center gap-x-2" v-if="isLoading">
-                                <Skeleton v-if="isLoading" class=" h4 w-15 bg-stone-900 rounded-md "> </Skeleton> -
-                                <Skeleton v-if="isLoading" class=" h4 w-15 bg-stone-900 rounded-md "> </Skeleton>
+                            <Skeleton v-if="isLoading" class="my1 h5 w-15 bg-stone-900 rounded-md "> </Skeleton>
+                            <div class="flex mt2 items-center gap-x-2" v-if="isLoading">
+                                <Skeleton v-if="isLoading" class=" h5 w-15 bg-stone-900 rounded-md "> </Skeleton>
+                                <Skeleton v-if="isLoading" class=" h5 w-15 bg-stone-900 rounded-md "> </Skeleton>
 
                             </div>
+
                         </div>
 
                     </div>
                     <div class="flex mt4 sm:mt0 flex-col  sm:items-end gap-y-1">
-                        <p class="md:text-4xl   text-3xl 2xl:text-5xl flex items-center  gap-x-2 font-medium">
+                        <p class="   text-3xl  flex items-center  gap-x-2 font-medium">
                             <span> $</span>
                             <AnimatedNumbers :format="true" :amount="Number.parseFloat(currentPrice)"
                                 :is-decimal="true" />
 
-                        <p v-if="!isLoading" :class="{
-                            ' !text-pink ': Number.parseFloat(quote?.percent_change ?? '') < 0,
-                            ' !text-lime ': Number.parseFloat(quote?.percent_change ?? '') >= 0,
 
-                        }" class=" text-sm sm:text-base 2xl:text-xl "><b class="font-extrabold font-mono  "><span
-                                    v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-                                        Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
-                                    }}%</b> <span class="opacity-70"></span>
-                        </p>
 
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
-                            <p v-if="!isLoading" class=" text-sm p1 px3 bg-lime-500 bg-opacity-10 rounded-md "><b
-                                    class="font-bold font-mono  text-lime-500">{{ Number.parseFloat(quote?.high ??
-                                        '').toFixed(3) }}</b> </p>
-                            <Skeleton v-if="isLoading" class=" h7 w-15 bg-lime-950 rounded-md "> </Skeleton>
-                            <Skeleton v-if="isLoading" class=" h7 w-15 bg-pink-950 rounded-md "> </Skeleton>
+                            <p v-if="!isLoading"
+                                class=" text-sm p1 px3 text-lime-500 bg-lime-500 flex items-center justify-center gap-x-1 bg-opacity-10 rounded-md ">
+                                <Icon name="solar:arrow-up-linear" />
+                                <b class="font-medium">
+                                    {{ Number.parseFloat(quote?.high ??
+                                        '').toFixed(3) }}
+                                </b>
+                            </p>
+                            <Skeleton v-if="isLoading"
+                                class=" h7 w-15 bg-stone-900 flex items-center justify-center gap-x-1 rounded-md ">
+                            </Skeleton>
+                            <Skeleton v-if="isLoading"
+                                class=" h7 w-15 bg-stone-900 flex items-center justify-center gap-x-1 rounded-md ">
+                            </Skeleton>
 
-                            <p v-if="!isLoading" class=" text-sm p1 px3 bg-pink-500 bg-opacity-10 rounded-md "><b
-                                    class="font-bold font-mono  text-pink-500">{{ Number.parseFloat(quote?.low ??
-                                        '').toFixed(3) }}</b> </p>
+                            <p v-if="!isLoading"
+                                class=" text-sm p1 px3 bg-pink-500  bg-opacity-10 rounded-md flex items-center justify-center gap-x-1 text-pink-500">
+                                <Icon name="solar:arrow-down-linear" />
+                                <b class="font-medium ">
+                                    {{ Number.parseFloat(quote?.low ??
+                                        '').toFixed(3) }}
+                                </b>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -228,9 +247,9 @@ onBeforeUnmount(() => {
                     <TrendChart title="price" v-if="!isLoading" :data="timeseries" height="17rem" width="100%" />
                     <Skeleton v-if="isLoading" class=" h-17rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
                     <div class="mt16 grid md:grid-cols-2 gap-4 md:gap-x-12">
-                        <VolumeChart v-if="!isLoading" :data="volumeseries" height="20rem" width="100%" />
+                        <VolumeChart v-if="!isLoading" :data="volumeseries" height="13rem" width="100%" />
 
-                        <Skeleton v-if="isLoading" class=" h-20rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
+                        <Skeleton v-if="isLoading" class=" h-13rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
 
                         <div v-if="isLoading" class="!mt12 grid  gap-6 ">
                             <Skeleton class="py2 px6 rounded-xl bg-stone-900">
@@ -244,36 +263,50 @@ onBeforeUnmount(() => {
                             </Skeleton>
 
                         </div>
-                        <div v-if="!isLoading" class="!mt12 grid  gap-6 ">
+                        <div v-if="!isLoading" class="!mt12 grid  gap-3">
                             <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
                                 <div class="size-12 text-lime grid place-items-center">
-                                    <Icon name="solar:chart-2-bold" size="30" />
+                                    <Icon name="solar:chart-2-bold" size="24" />
                                 </div>
                                 <div>
                                     <h3 class="  text-sm">Float Index</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">{{ stock.float
+                                    <p class=" text-lg "><b class="font-medium text-lime-500">{{ stock.float
                                             }}</b>
                                     </p>
                                 </div>
                             </div>
                             <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
-                                <div class="size-12 text-lime grid place-items-center">
-                                    <Icon name="solar:graph-new-linear" size="30" />
-                                </div>
-                                <div>
-                                    <h3 class="  text-sm">Change</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500"><span
-                                                v-if="Number.parseFloat(quote?.percent_change ?? '0') >= 0">+</span>{{
-                                                    Number.parseFloat(quote?.percent_change ?? '0').toFixed(2) }}</b></p>
+
+                                <div class="flex gap-3 justify-between wfull">
+                                    <div>
+                                        <h3 class="  text-sm">Year high</h3>
+                                        <p class=" text-lg "><b class="font-medium text-lime-500">{{
+                                            Number.parseFloat(quote?.fifty_two_week.high ?? '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h3 class="  text-sm">Year low</h3>
+                                        <p class=" text-lg "><b class="font-medium text-pink-500">{{
+                                            Number.parseFloat(quote?.fifty_two_week.low ?? '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h3 class="  text-sm">% change</h3>
+                                        <p class=" text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(quote?.fifty_two_week.high_change_percent ??
+                                                '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
                                 <div class="size-12 text-lime grid place-items-center">
-                                    <Icon name="solar:course-up-linear" size="30" />
+                                    <Icon name="solar:course-up-linear" size="24" />
                                 </div>
                                 <div>
                                     <h3 class="  text-sm">Sentiment</h3>
-                                    <p class=" text-lg "><b class="font-bold font-mono  text-lime-500">{{
+                                    <p class=" text-lg "><b class="font-medium text-lime-500">{{
                                         stock.sentiment }}</b></p>
                                 </div>
                             </div>
