@@ -1,13 +1,11 @@
-import { isYesterday } from 'date-fns'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { ServerResponse, StatusCode } from '~/server/types'
-import type { Country, FxPair } from '~/server/types/fx.types'
-import { getItemValue, getOrSetItem, setItemValue } from '~/utils/dbManager'
-import { strategies } from '../data/settings'
+import type { MarketStatus } from '~/server/types/fx.types'
 import type { Stock } from '~/types/index.types'
 export const useStockstore = defineStore('Stocks', () => {
     const Stocks = ref<Stock[]>()
-    async function fetchStocks() {
+    const MarketStatus = ref<MarketStatus>()
+    async function fetchStocksData() {
 
         try {
 
@@ -18,16 +16,28 @@ export const useStockstore = defineStore('Stocks', () => {
                 }
             })
             if (resp.ok && resp.data) {
-                console.log(resp.data)
+
                 Stocks.value = resp.data
             }
-        } catch (error) {
+            const resp2 = await $fetch<ServerResponse<StatusCode, MarketStatus>>("/api/market/status", {
+                method: "GET",
+                onResponseError({ response }) {
+                    throw new Error(genErrorMessage(response._data.message, 500))
+                }
+            })
+            $toast.default(`${resp2.ok}`)
+            if (resp2.ok && resp2.data) {
 
+                MarketStatus.value = resp2.data
+            }
+
+        } catch (error) {
+            throw new Error(`${error}`)
         }
 
     }
 
-    return { Stocks, fetchStocks }
+    return { Stocks, fetchStocksData, MarketStatus }
 })
 
 if (import.meta.hot) {

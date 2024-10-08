@@ -6,7 +6,7 @@ const route = useRoute()
 const title = computed(() => route.meta.title ?? 'DJS')
 const fxStore = useFxPairStore()
 const stockStore = useStockstore()
-await stockStore.fetchStocks()
+await stockStore.fetchStocksData()
 </script>
 
 <template>

@@ -48,7 +48,7 @@ watch(chosenTab, async () => {
 <template>
     <div>
         <div class="wfull">
-            <h3 class="text-lg md:text-2xl !font-normal  opacity-80">Today's News
+            <h3 class="text-lg  !font-normal  opacity-80">Today's News
             </h3>
             <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-900 !bg-opacity-60 mt4">
                 <div class="max-w-xs wfull ">
@@ -60,10 +60,11 @@ watch(chosenTab, async () => {
                             <div class="rounded-xl transition duration-300 hover:bg-stone-900 p3 flex gap-x-4">
                                 <img :src="news.image_url" :alt="news.source" class="sm:size-28 size-20 rounded-md">
                                 <div class="w-full">
-                                    <h3 class="sm:text-xl line-clamp-1 text-pretty !font-medium">{{ news.title }}
+                                    <h3 class="sm:text-lg line-clamp-1 text-pretty !font-medium">{{ news.title }}
                                     </h3>
-                                    <p class="sm:text-lg text-sm mt2 text-pretty font-light line-clamp-2 opacity-90 ">{{
-    news.description }}
+                                    <p class="sm:text-base text-sm mt2 text-pretty font-light line-clamp-2 opacity-90 ">
+                                        {{
+                                            news.description }}
                                     </p>
                                 </div>
                             </div>

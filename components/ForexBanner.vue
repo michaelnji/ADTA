@@ -38,14 +38,14 @@
     <div>
         <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-stone-900 items-center">
             <div class="flex  w-max items-center rounded-2xl  bg-black p3 px-6 gap-x-3" v-for="index in indexes">
-                <h3 class="   font-display text-base sm:text-xl lg:text-2xl font-bold">{{ index.instrument }}
+                <h3 class="   font-display text-base sm:text-lg font-bold">{{ index.instrument }}
                 </h3>
                 <div class="flex items-center gap-x-2">
-                    <p class="font-semibold font-mono w-max text-yellow-600 text-base lg:text-xl">
+                    <p class="font-semibold  w-max text-yellow-500 text-base ">
                         <AnimatedNumbers :amount="index.price" :isDecimal="true" />
                     </p>
-                    <div class=" ml-2"
-                        :class="{ 'text-teal-300': index.change > 0, 'text-pink-500': index.change < 0 }">{{
+                    <div class=" ml-2 text-sm"
+                        :class="{ 'text-lime-500': index.change > 0, 'text-pink-500': index.change < 0 }">{{
                         `${index.change >= 0 ? '+' : ''}${index.change}` }}%</div>
                 </div>
             </div>

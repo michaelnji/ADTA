@@ -29,22 +29,22 @@ onMounted(async () => {
 </script>
 <template>
     <div>
-        <div class="bg-lime text-pretty wfull transition-all duration-300 p6 text-black rounded-2xl ">
+        <div class="bg-lime text-pretty wfull transition-all duration-300 p6 text-black rounded-2xl hmax">
             <div v-if="!isLoading && quoteDetail">
                 <div class="mb3">
                     <Icon name="solar:crown-minimalistic-linear" size="50" />
                 </div>
-                <p class="font-display text-3xl sm:text-5xl font-medium">
+                <p class="font-display text-3xl font-medium">
                     {{ quoteDetail.quote }}
 
                 </p>
-                <div class="mt-6 mla text-xl sm:text-2xl font-bold flex justify-end">- {{ quoteDetail.author }}</div>
+                <div class="mt-6 mla text-xl  font-bold flex justify-end">- {{ quoteDetail.author }}</div>
             </div>
             <div v-if="isLoading">
                 <div class="mb3">
                     <Skeleton class=" bg-lime-500 rounded-2xl size-20" />
                 </div>
-                <Skeleton class=" bg-lime-500 rounded-2xl size-40 w-full" />
+                <Skeleton class=" bg-lime-500 rounded-2xl size-30 w-full" />
                 <div class="mt-6 mla text-2xl font-bold flex justify-end">
                     <Skeleton class=" bg-lime-500 rounded-2xl size-12 w-36" />
 

@@ -56,6 +56,8 @@ export default defineNuxtConfig({
         "solar:course-up-linear",
         "solar:branching-paths-up-linear",
         "solar:branching-paths-up-bold",
+        "solar:arrow-down-linear",
+        "solar:arrow-up-linear"
 
 
       ],
@@ -101,12 +103,14 @@ export default defineNuxtConfig({
     fmpUrl: '', fmpKey: "",
     twelveKey: "",
     atheleiaKey: "",
+    polygonKey: "",
     public: {
       finnhubUrl: "",
       finnhubwsUrl: "",
       finnhubKey: '',
       twelveUrl: "",
-      tickerUrl: ""
+      tickerUrl: "",
+      polygonUrl: ""
     }
   },
   vue: {
