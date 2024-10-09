@@ -287,8 +287,9 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
                 <div class="mt3 md:mt6 ">
-                    <TrendChart title="price" v-if="!isLoading" :data="timeseries" height="17rem" width="100%" />
-                    <Skeleton v-if="isLoading" class=" h-17rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
+                    <TrendChart type="line" title="price" v-if="!isLoading" :data="timeseries" height="21rem"
+                        width="100%" />
+                    <Skeleton v-if="isLoading" class=" h-21rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
                     <div class=" grid md:grid-cols-2 gap-4 md:gap-x-12">
                         <div class="mt16" v-if="!isLoading">
                             <VolumeChart :data="volumeseries" height="13rem" width="100%" />
@@ -309,15 +310,30 @@ onBeforeUnmount(() => {
 
                         </div>
                         <div v-if="!isLoading" class="!mt12 grid  gap-3">
+
                             <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
-                                <div class="size-12 text-lime grid place-items-center">
-                                    <Icon name="solar:chart-2-bold" size="24" />
-                                </div>
-                                <div>
-                                    <h3 class="  text-sm">Float Index</h3>
-                                    <p class=" text-lg "><b class="font-medium text-lime-500">{{ stock.float
-                                            }}</b>
-                                    </p>
+
+                                <div class="flex gap-3 justify-between wfull">
+                                    <div>
+                                        <h3 class="  text-sm">Pevious Close</h3>
+                                        <p class=" text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.previous_close ?? '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h3 class="  text-sm">Float</h3>
+                                        <p class=" text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.float ?? '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h3 class="  text-sm">Relative Volume</h3>
+                                        <p class=" text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.rv ?? '0').toFixed(2) }}</b>
+                                        </p>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">

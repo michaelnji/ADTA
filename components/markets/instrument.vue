@@ -38,7 +38,7 @@ const priceChange = computed(() => props.change >= 0 ? `+${props.change}%` : `${
             </p>
             <div class="max-h-10rem mt2 overflow-hidden">
 
-                <SparkLine height="1rem" width="6rem" />
+                <SparkLine height="3rem" width="6rem" />
             </div>
         </div>
     </div>

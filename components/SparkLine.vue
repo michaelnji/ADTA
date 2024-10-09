@@ -21,7 +21,7 @@ onMounted(() => { isLoading.value = false })
 <template>
     <div class="dark">
         <div class="rounded-2xl  max-wfull">
-            <LineChart :style="style" :show-grid-line="false" :show-legend="false" :show-tooltip="false"
+            <AreaChart :style="style" :show-grid-line="false" :show-legend="false" :show-tooltip="false"
                 :show-x-axis="false" :show-y-axis="false" class="wfull hfull" :data="data" index="time"
                 :colors="['#a9e34b']" :categories="[`price`]" :y-formatter="(tick) => {
                     return typeof tick === 'number'

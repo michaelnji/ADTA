@@ -29,7 +29,7 @@ export default eventHandler(async (event) => {
 
     try {
         // get current stocks on database
-        const { data, error } = await client.from("TOP STOCKS LIST").select('*')
+        const { data, error } = await client.from("TOP STOCKS LIST WTCHLIST").select('*')
         if (error) {
             setResponseStatus(event, 500)
             return sendServerResponse(500, error?.message)

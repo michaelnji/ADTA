@@ -36,7 +36,7 @@
 </script>
 <template>
     <div>
-        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-stone-900 items-center">
+        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-black items-center">
             <div class="flex  w-max items-center rounded-2xl  bg-black p3 px-6 gap-x-3" v-for="index in indexes">
                 <h3 class="   font-display text-base sm:text-lg font-bold">{{ index.instrument }}
                 </h3>

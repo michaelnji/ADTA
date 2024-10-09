@@ -1,25 +1,49 @@
 <script lang="ts" setup>
-import type { ServerResponse, StatusCode } from '~/server/types';
-import type { NewsArticles } from '~/server/types/news.types';
+import type { Story, TickerNews } from '~/server/types/news.types';
+import { wait } from '~/utils/misc';
+const stockStore = useStockstore()
 const isLoading = ref(true)
-const newsArray = ref<NewsArticles[]>()
-const chosenTab = ref('forex')
+const runtimeConfig = useRuntimeConfig()
+const newsArray = ref<Story[]>([])
+const chosenTab = ref('market')
 onMounted(async () => {
     try {
-        const resp = await $fetch<ServerResponse<StatusCode, NewsArticles[]>>("/api/ext/news/fetch", {
-            method: "POST",
-            body: {
-                category: chosenTab.value,
-                limit: 4
-            }, onResponseError({ response }) {
-                $toast.error(genErrorMessage(response._data.message, 500))
+        isLoading.value = true
+        if (chosenTab.value !== 'watchlist') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=T:${chosenTab.value}`
+            const news = await $fetch<TickerNews>(newsUrl, {
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(500, response._data))
+                    return
+                }
+            })
+            if (news.stories) {
+                newsArray.value = news.stories
+                isLoading.value = false
             }
-        })
-        if (resp.ok && resp.data) {
-            isLoading.value = false
-            newsArray.value = resp.data
-            console.log(newsArray)
         }
+        else {
+            if (stockStore.Stocks) {
+                for (let i = 0; i < stockStore.Stocks.length; i++) {
+                    if (i % 7 === 0) {
+                        await wait(50000)
+                    }
+                    const element = stockStore.Stocks[i]
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(or T:earning T:sec T:sec_fin)`
+                    const news = await $fetch<TickerNews>(newsUrl, {
+                        onResponseError({ response }) {
+                            $toast.error(genErrorMessage(500, response._data))
+
+                        }
+                    })
+                    if (news.stories) {
+                        newsArray.value = [...newsArray.value, ...news.stories]
+                    }
+                }
+                isLoading.value = false
+            }
+        }
+
     } catch (error) {
 
     }
@@ -27,20 +51,43 @@ onMounted(async () => {
 watch(chosenTab, async () => {
     try {
         isLoading.value = true
-        const resp = await $fetch<ServerResponse<StatusCode, NewsArticles[]>>("/api/ext/news/fetch", {
-            method: "POST",
-            body: {
-                category: chosenTab.value,
-                limit: 4
-            },
-            onResponseError({ response }) {
-                $toast.error(genErrorMessage(response._data.message, 500))
+        if (chosenTab.value !== 'watchlist') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=T:${chosenTab.value}`
+            const news = await $fetch<TickerNews>(newsUrl, {
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(500, response._data))
+                    return
+                }
+            })
+            if (news.stories) {
+                newsArray.value = news.stories
+                isLoading.value = false
             }
-        })
-        if (resp.ok && resp.data) {
-            isLoading.value = false
-            newsArray.value = resp.data
         }
+        else {
+            if (stockStore.Stocks) {
+                for (let i = 0; i < stockStore.Stocks.length; i++) {
+                    if (i % 7 === 0) {
+                        await wait(50000)
+                    }
+                    const element = stockStore.Stocks[i]
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=2&(or T:earning T:sec T:sec_fin)`
+                    const news = await $fetch<TickerNews>(newsUrl, {
+                        onResponseError({ response }) {
+                            $toast.error(genErrorMessage(500, response._data))
+
+                        }
+                    })
+                    if (news.stories) {
+
+
+                        newsArray.value = [...newsArray.value, ...news.stories]
+                    }
+                }
+                isLoading.value = false
+            }
+        }
+
     } catch (error) {
 
     }
@@ -52,15 +99,15 @@ watch(chosenTab, async () => {
             <h3 class="text-lg  !font-normal  opacity-80">Today's News
             </h3>
             <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-900 !bg-opacity-60 mt4">
-                <div class="max-w-xs wfull ">
+                <div class="max-w-sm   ">
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
 
-                <div class="mt6 grid gap-y-3">
+                <div class="mt6 grid gap-y-3 py12 xl:h-45rem xl:overflow-y-auto">
                     <div v-for="news, i in newsArray" v-if="!isLoading">
-                        <NuxtLink target="_blank" v-if="i <= 3" :to="news.url">
+                        <NuxtLink target="_blank" :to="news.url">
                             <div class="rounded-xl transition duration-300 hover:bg-stone-900 p3 flex gap-x-4">
-                                <img :src="news.image_url" :alt="news.source" class="sm:size-28 size-20 rounded-md">
+
                                 <div class="w-full">
                                     <h3 class="sm:text-lg line-clamp-1 text-pretty !font-medium">{{ news.title }}
                                     </h3>
@@ -72,9 +119,9 @@ watch(chosenTab, async () => {
                             </div>
                         </NuxtLink>
                     </div>
-                    <div v-for="i in [0, 1, 2]" v-if="isLoading" class="">
+                    <div v-for="i in [0, 1, 2, 3]" v-if="isLoading" class="">
                         <div class="rounded-xl transition duration-300  p3 flex gap-x-4">
-                            <Skeleton class="w-28 h20 rounded-xl bg-stone-900" />
+                            <!-- <Skeleton class="w-28 h20 rounded-xl bg-stone-900" /> -->
                             <div class="w-full">
                                 <Skeleton class="h-8 w-60% rounded-lg bg-stone-900" />
                                 <Skeleton class="h4 mt4 w-90% rounded-lg bg-stone-900" />

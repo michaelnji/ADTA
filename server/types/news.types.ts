@@ -44,3 +44,20 @@ export interface Meta {
     limit: number;
     page: number;
 }
+
+export interface TickerNews {
+    stories: Story[];
+    lastID: string;
+}
+
+export interface Story {
+    id: string;
+    title: string;
+    url: string;
+    site: string;
+    time: number;
+    faviconURL: string;
+    tags: string[];
+    tickers: string[];
+    description?: string;
+}
