@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
         const body = await readBody(event)
         const today = format(new Date(), 'yyyy-MM-dd')
         const limit = body.limit ?? 2
-        const searchString = getNewsSearchString(body.category)
+        const searchString = getNewsSearchString(body.category) ?? body.category
         const url = `${base}news/all?language=en&limit=${limit}&exclude_domains=medium.com&published_on=${today}&search=${searchString}&api_token=${apiKey}`
         const resp = await $fetch<News>(url, {
             onResponseError({ response }) {

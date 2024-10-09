@@ -180,6 +180,51 @@ export type Database = {
         }
         Relationships: []
       }
+      "TOP STOCKS LIST WTCHLIST": {
+        Row: {
+          displaySymbol: string
+          float: string | null
+          id: string
+          perc_chnge: string | null
+          points: number | null
+          position: number | null
+          previous_close: string | null
+          rv: string | null
+          sentiment: string | null
+          volume: string
+          year_high: string | null
+          year_low: string | null
+        }
+        Insert: {
+          displaySymbol: string
+          float?: string | null
+          id?: string
+          perc_chnge?: string | null
+          points?: number | null
+          position?: number | null
+          previous_close?: string | null
+          rv?: string | null
+          sentiment?: string | null
+          volume: string
+          year_high?: string | null
+          year_low?: string | null
+        }
+        Update: {
+          displaySymbol?: string
+          float?: string | null
+          id?: string
+          perc_chnge?: string | null
+          points?: number | null
+          position?: number | null
+          previous_close?: string | null
+          rv?: string | null
+          sentiment?: string | null
+          volume?: string
+          year_high?: string | null
+          year_low?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
