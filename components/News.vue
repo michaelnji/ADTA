@@ -18,6 +18,7 @@ onMounted(async () => {
         if (resp.ok && resp.data) {
             isLoading.value = false
             newsArray.value = resp.data
+            console.log(newsArray)
         }
     } catch (error) {
 
@@ -46,7 +47,7 @@ watch(chosenTab, async () => {
 })
 </script>
 <template>
-    <div>
+    <div class='transition-all duration-300'>
         <div class="wfull">
             <h3 class="text-lg  !font-normal  opacity-80">Today's News
             </h3>
@@ -54,6 +55,7 @@ watch(chosenTab, async () => {
                 <div class="max-w-xs wfull ">
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
+
                 <div class="mt6 grid gap-y-3">
                     <div v-for="news, i in newsArray" v-if="!isLoading">
                         <NuxtLink target="_blank" v-if="i <= 3" :to="news.url">
@@ -80,6 +82,10 @@ watch(chosenTab, async () => {
                                 <Skeleton class="h4 mt2 w-90% rounded-lg bg-stone-900" />
                             </div>
                         </div>
+                    </div>
+                    <div class="mt6 grid gap-y-3 h20rem flex items-center justify-center gap-3"
+                        v-if="newsArray && newsArray?.length <= 0 && !isLoading">
+                        <h1 class="font-display text-2xl opacity-30">No news for now</h1>
                     </div>
                 </div>
             </div>

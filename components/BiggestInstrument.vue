@@ -59,7 +59,7 @@ const unsubscribe = (symbol: string) => {
 };
 onMounted(async () => {
     try {
-        $toast.info(stockStore.MarketStatus?.afterHours.toString() ?? '')
+        // $toast.info(stockStore.MarketStatus?.afterHours.toString() ?? '')
         const now = new Date();
         const resp = await $fetch<ServerResponse<StatusCode, Quote12>>(
             "/api/stocks/quote",
@@ -117,7 +117,48 @@ onMounted(async () => {
                     timeseries.value[timeseries.value.length - 1].price.toString();
                 isLoading.value = false;
             }
-        } else if (isWeekend(now)) {
+        }
+        else if (!stockStore.MarketStatus?.isTheStockMarketOpen) {
+            const resp = await $fetch<
+                ServerResponse<StatusCode, Timeseries["values"]>
+            >("/api/timeseries/stock", {
+                method: "POST",
+                body: {
+                    symbol: props.stock.displaySymbol,
+                    interval: "1min",
+                    // outputsize: 20000,
+                    date: 'yesterday',
+                },
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(response._data.message, 500));
+                },
+            });
+
+            if (resp.ok && resp.data) {
+                const reversedData = resp.data.reverse();
+                for (const element of reversedData) {
+                    if (reversedData.indexOf(element) % 60 === 0) {
+                        const v = {
+                            time: format(element.datetime, "hh:mm aaa"),
+                            volume: Number.parseInt(element.volume),
+                        };
+
+                        volumeseries.value = [...volumeseries.value, v];
+                    }
+                    const s = {
+                        time: format(element.datetime, "hh:mm aaa"),
+                        price: Number.parseInt(element.close),
+                    };
+
+                    timeseries.value = [...timeseries.value, s];
+                }
+                currentPrice.value =
+                    timeseries.value[timeseries.value.length - 1].price.toString();
+                isLoading.value = false;
+            }
+        }
+
+        else if (isWeekend(now)) {
             const resp = await $fetch<
                 ServerResponse<StatusCode, Timeseries["values"]>
             >("/api/timeseries/stock", {
@@ -157,7 +198,9 @@ onMounted(async () => {
                     timeseries.value[timeseries.value.length - 1].price.toString();
                 isLoading.value = false;
             }
-        } else {
+        }
+
+        else {
             isLoading.value = false;
         }
     } catch (error) { }
@@ -189,8 +232,8 @@ onBeforeUnmount(() => {
 
                             }" class=" text-sm  my1"><b class="font-extrabold font-mono  "><span
                                         v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-                                            Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
-                                        }}%</b> <span class="opacity-70"></span>
+    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+}}%</b> <span class="opacity-70"></span>
                             </p>
                             <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
                                 <p class=" text-sm   opacity-80">{{ quote?.name }}</p>
@@ -246,10 +289,12 @@ onBeforeUnmount(() => {
                 <div class="mt3 md:mt6 ">
                     <TrendChart title="price" v-if="!isLoading" :data="timeseries" height="17rem" width="100%" />
                     <Skeleton v-if="isLoading" class=" h-17rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
-                    <div class="mt16 grid md:grid-cols-2 gap-4 md:gap-x-12">
-                        <VolumeChart v-if="!isLoading" :data="volumeseries" height="13rem" width="100%" />
+                    <div class=" grid md:grid-cols-2 gap-4 md:gap-x-12">
+                        <div class="mt16" v-if="!isLoading">
+                            <VolumeChart :data="volumeseries" height="13rem" width="100%" />
+                        </div>
 
-                        <Skeleton v-if="isLoading" class=" h-13rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
+                        <Skeleton v-if="isLoading" class=" h-13rem bg-stone-900 w-full  rounded-2xl mt6 "> </Skeleton>
 
                         <div v-if="isLoading" class="!mt12 grid  gap-6 ">
                             <Skeleton class="py2 px6 rounded-xl bg-stone-900">

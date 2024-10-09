@@ -143,35 +143,40 @@ export interface Value {
 }
 
 export interface MarketStatus {
-    afterHours: boolean;
-    currencies: Currencies;
-    earlyHours: boolean;
-    exchanges: Exchanges;
-    indicesGroups: IndicesGroups;
-    market: string;
-    serverTime: Date;
+    stockExchangeName: string;
+    stockMarketHours: StockMarketHours;
+    stockMarketHolidays: StockMarketHoliday[];
+    isTheStockMarketOpen: boolean;
+    isTheEuronextMarketOpen: boolean;
+    isTheForexMarketOpen: boolean;
+    isTheCryptoMarketOpen: boolean;
 }
 
-export interface Currencies {
-    crypto: string;
-    fx: string;
+export interface StockMarketHoliday {
+    year: number;
+    assumptionDay?: Date;
+    labourDay?: Date;
+    christmasEve?: Date;
+    newYearSEve?: Date;
+    christmasDay?: Date;
+    boxingDay?: Date;
+    newYearSDay?: Date;
+    goodFriday?: Date;
+    easterMonday?: Date;
+    christmasDEC25Th?: Date;
+    laborDay?: Date;
+    newYearSDayDEC31St?: Date;
+    christmasDEC27Th?: Date;
+    christmasDEC28Th?: Date;
+    laborDayMay3RD?: Date;
+    christmasDEC24Th?: Date;
+    easter?: Date;
+    newYearSDayJan1St?: Date;
+    bankHoliday?: Date;
+    christmas?: Date;
 }
 
-export interface Exchanges {
-    nasdaq: string;
-    nyse: string;
-    otc: string;
-}
-
-export interface IndicesGroups {
-    sAndP: string;
-    societeGenerale: string;
-    msci: string;
-    ftseRussell: string;
-    mstar: string;
-    mstarc: string;
-    cccy: string;
-    cgi: string;
-    nasdaq: string;
-    dowJones: string;
+export interface StockMarketHours {
+    openingHour: string;
+    closingHour: string;
 }

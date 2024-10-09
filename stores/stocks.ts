@@ -22,17 +22,17 @@ export const useStockstore = defineStore('Stocks', () => {
             const resp2 = await $fetch<ServerResponse<StatusCode, MarketStatus>>("/api/market/status", {
                 method: "GET",
                 onResponseError({ response }) {
+                    // $toast.error(response._data)
                     throw new Error(genErrorMessage(response._data.message, 500))
                 }
             })
-            $toast.default(`${resp2.ok}`)
             if (resp2.ok && resp2.data) {
-
+                console.log(resp2.data)
                 MarketStatus.value = resp2.data
             }
 
         } catch (error) {
-            throw new Error(`${error}`)
+            // throw new Error(`${error}`)
         }
 
     }

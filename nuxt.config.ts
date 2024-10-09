@@ -57,7 +57,8 @@ export default defineNuxtConfig({
         "solar:branching-paths-up-linear",
         "solar:branching-paths-up-bold",
         "solar:arrow-down-linear",
-        "solar:arrow-up-linear"
+        "solar:arrow-up-linear",
+        'solar:info-circle-linear'
 
 
       ],
