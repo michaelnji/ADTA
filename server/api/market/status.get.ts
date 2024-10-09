@@ -4,14 +4,16 @@ import { sendServerResponse } from '~/server/utils/response'
 export default eventHandler(async (event) => {
     try {
 
-        const base = useRuntimeConfig().public.polygonUrl
-        const url = `${base}v1/marketstatus/now?apiKey=${useRuntimeConfig().polygonKey}`
+        const base = useRuntimeConfig().fmpUrl
+        const key = useRuntimeConfig().fmpKey
+        const url = `${base}is-the-market-open?exchange=US&apikey=${key}`
+        // const url = `${base}v1/marketstatus/now?apiKey=${key}`
         const resp = await $fetch<MarketStatus>(url, {
             onResponseError({ response }) {
+                console.log(response._data)
                 throw new Error(response._data)
             }
         })
-        console.log(resp)
         setResponseStatus(event, 200)
         return sendServerResponse(200, "success", resp)
     } catch (error) {
