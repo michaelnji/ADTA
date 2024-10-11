@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { formatDistance } from 'date-fns';
 import type { Story, TickerNews } from '~/server/types/news.types';
 import { wait } from '~/utils/misc';
 const stockStore = useStockstore()
@@ -9,8 +10,21 @@ const chosenTab = ref('market')
 onMounted(async () => {
     try {
         isLoading.value = true
-        if (chosenTab.value !== 'watchlist') {
-            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=T:${chosenTab.value}`
+        if (chosenTab.value === 'market') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US (or E:${chosenTab.value} (or E:breaking_news E:cpi E:fomc E:breaking E:inflation E:index E:earnings E:SEC)))&n=5`
+            const news = await $fetch<TickerNews>(newsUrl, {
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(500, response._data))
+                    return
+                }
+            })
+            if (news.stories) {
+                newsArray.value = news.stories
+                isLoading.value = false
+            }
+        }
+        else if (chosenTab.value === 'analysis') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US E:${chosenTab.value} (or E:breaking_news E:report E:analyst E:filing))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
@@ -24,12 +38,10 @@ onMounted(async () => {
         }
         else {
             if (stockStore.Stocks) {
-                for (let i = 0; i < stockStore.Stocks.length; i++) {
-                    if (i % 7 === 0) {
-                        await wait(50000)
-                    }
+                for (let i = 0; i < 3; i++) {
+
                     const element = stockStore.Stocks[i]
-                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(or T:earning T:sec T:sec_fin)`
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(and T:earning T:sec T:sec_fin tt:${element.displaySymbol})`
                     const news = await $fetch<TickerNews>(newsUrl, {
                         onResponseError({ response }) {
                             $toast.error(genErrorMessage(500, response._data))
@@ -51,8 +63,21 @@ onMounted(async () => {
 watch(chosenTab, async () => {
     try {
         isLoading.value = true
-        if (chosenTab.value !== 'watchlist') {
-            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=T:${chosenTab.value}`
+        if (chosenTab.value === 'market') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US (or E:${chosenTab.value} (or E:breaking_news E:cpi E:fomc E:breaking E:inflation E:index E:earnings E:SEC)))&n=5`
+            const news = await $fetch<TickerNews>(newsUrl, {
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(500, response._data))
+                    return
+                }
+            })
+            if (news.stories) {
+                newsArray.value = news.stories
+                isLoading.value = false
+            }
+        }
+        else if (chosenTab.value === 'analysis') {
+            const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US E:${chosenTab.value} (or E:breaking_news E:report E:analyst E:filing))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
@@ -66,12 +91,10 @@ watch(chosenTab, async () => {
         }
         else {
             if (stockStore.Stocks) {
-                for (let i = 0; i < stockStore.Stocks.length; i++) {
-                    if (i % 7 === 0) {
-                        await wait(50000)
-                    }
+                for (let i = 0; i < 3; i++) {
+
                     const element = stockStore.Stocks[i]
-                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=2&(or T:earning T:sec T:sec_fin)`
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(and T:earning T:sec T:sec_fin tt:${element.displaySymbol})`
                     const news = await $fetch<TickerNews>(newsUrl, {
                         onResponseError({ response }) {
                             $toast.error(genErrorMessage(500, response._data))
@@ -103,7 +126,7 @@ watch(chosenTab, async () => {
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
 
-                <div class="mt6 grid gap-y-3 py12 xl:h-45rem xl:overflow-y-auto">
+                <div class="grid gap-y-3 py6 md:px3 xl:h-45rem xl:overflow-y-auto">
                     <div v-for="news, i in newsArray" v-if="!isLoading">
                         <NuxtLink target="_blank" :to="news.url">
                             <div class="rounded-xl transition duration-300 hover:bg-stone-900 p3 flex gap-x-4">
@@ -115,6 +138,17 @@ watch(chosenTab, async () => {
                                         {{
                                             news.description }}
                                     </p>
+                                    <div class="mt3 flex gap-x-4">
+                                        <span class="text-xs font-medium  text-lime rounded-lg">
+                                            {{ formatDistance(new Date(news.time), Date.now()) }} ago
+                                        </span>
+                                        <span class="text-xs font-medium opacity-80 rounded-lg">
+                                            {{ news.site }}
+                                        </span>
+                                        <span v-if="news.tags" class="text-xs font-medium opacity-80 rounded-lg">
+                                            {{ news.tags[0] }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </NuxtLink>

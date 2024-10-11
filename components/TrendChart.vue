@@ -1,8 +1,6 @@
 <script setup lang="ts">
 
-import { CurveType } from '@unovis/ts'
-import { add, format } from 'date-fns';
-import { cos, floor, isPrime, log, randomInt, sin } from 'mathjs';
+import { CurveType } from '@unovis/ts';
 const props = defineProps<{
     height: string;
     width: string
@@ -18,7 +16,7 @@ onMounted(() => { isLoading.value = false })
 <template>
     <div class="dark">
         <div class="rounded-2xl  max-wfull" v-if="props.type === 'area'">
-            <AreaChart :style="style" :curve-type="CurveType.CatmullRom" :show-grid-line="false" :data="data"
+            <AreaChart :style="style" :curve-type="CurveType.MonotoneY" :show-grid-line="false" :data="data"
                 index="time" :colors="['#a9e34b']" :categories="[`price`]" :y-formatter="(tick) => {
                     return typeof tick === 'number'
                         ? `${new Intl.NumberFormat('us', { unitDisplay: 'long' }).format(tick).toString()}`
