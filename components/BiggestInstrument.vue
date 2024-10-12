@@ -16,7 +16,7 @@ type VolumeSeries = {
 };
 const isConnected = ref(false);
 const config = useRuntimeConfig();
-const url = `${config.public.finnhubUrl}?token=${config.public.finnhubKey}`;
+const url = `${config.public.finnhubwsUrl}?token=${config.public.finnhubKey}`;
 const props = defineProps<{
     stock: Stock;
 }>();
@@ -71,6 +71,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
+                retry: 3,
+                retryDelay: 1000
             },
         );
         if (resp.ok && resp.data) {
@@ -93,6 +95,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
+                retry: 3,
+                retryDelay: 1000
             });
             if (resp.ok && resp.data) {
                 const reversedData = resp.data.reverse();
@@ -132,6 +136,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
+                retry: 3,
+                retryDelay: 1000
             });
 
             if (resp.ok && resp.data) {
@@ -174,6 +180,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
+                retry: 3,
+                retryDelay: 1000
             });
 
             if (resp.ok && resp.data) {
@@ -232,11 +240,11 @@ onBeforeUnmount(() => {
 
                             }" class=" text-sm  my1"><b class="font-extrabold font-mono  "><span
                                         v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
-}}%</b> <span class="opacity-70"></span>
+                                    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                    }}%</b> <span class="opacity-70"></span>
                             </p>
                             <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
-                                <p class=" text-sm   opacity-80">{{ quote?.name }}</p>
+                                <p class=" text-sm line-clamp-1   opacity-80">{{ quote?.name }}</p>
                                 <p class=" text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}</p>
 
                             </div>
@@ -298,13 +306,13 @@ onBeforeUnmount(() => {
                         <Skeleton v-if="isLoading" class=" h-13rem bg-stone-900 w-full  rounded-2xl mt6 "> </Skeleton>
 
                         <div v-if="isLoading" class="!mt12 grid  gap-6 ">
-                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+                            <Skeleton class="px6 py8 rounded-xl bg-stone-900">
 
                             </Skeleton>
-                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+                            <Skeleton class="px6 py8 rounded-xl bg-stone-900">
 
                             </Skeleton>
-                            <Skeleton class="py2 px6 rounded-xl bg-stone-900">
+                            <Skeleton class="px6 py8 rounded-xl bg-stone-900">
 
                             </Skeleton>
 
@@ -317,19 +325,19 @@ onBeforeUnmount(() => {
                                     <div>
                                         <h3 class="  text-sm">Pevious Close</h3>
                                         <p class=" text-lg "><b class="font-medium ">{{
-                                            Number.parseFloat(stock.previous_close ?? '0').toFixed(2) }}</b>
+                                                Number.parseFloat(stock.previous_close ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
                                         <h3 class="  text-sm">Float</h3>
                                         <p class=" text-lg "><b class="font-medium ">{{
-                                            Number.parseFloat(stock.float ?? '0').toFixed(2) }}</b>
+                                                Number.parseFloat(stock.float ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
                                         <h3 class="  text-sm">Relative Volume</h3>
                                         <p class=" text-lg "><b class="font-medium ">{{
-                                            Number.parseFloat(stock.rv ?? '0').toFixed(2) }}</b>
+                                                Number.parseFloat(stock.rv ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
 
@@ -342,19 +350,19 @@ onBeforeUnmount(() => {
                                     <div>
                                         <h3 class="  text-sm">Year high</h3>
                                         <p class=" text-lg "><b class="font-medium text-lime-500">{{
-                                            Number.parseFloat(quote?.fifty_two_week.high ?? '0').toFixed(2) }}</b>
+                                                Number.parseFloat(quote?.fifty_two_week.high ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
                                         <h3 class="  text-sm">Year low</h3>
                                         <p class=" text-lg "><b class="font-medium text-pink-500">{{
-                                            Number.parseFloat(quote?.fifty_two_week.low ?? '0').toFixed(2) }}</b>
+                                                Number.parseFloat(quote?.fifty_two_week.low ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
                                         <h3 class="  text-sm">% change</h3>
                                         <p class=" text-lg "><b class="font-medium ">{{
-                                            Number.parseFloat(quote?.fifty_two_week.high_change_percent ??
+                                                Number.parseFloat(quote?.fifty_two_week.high_change_percent ??
                                                 '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
@@ -368,7 +376,7 @@ onBeforeUnmount(() => {
                                 <div>
                                     <h3 class="  text-sm">Sentiment</h3>
                                     <p class=" text-lg "><b class="font-medium text-lime-500">{{
-                                        stock.sentiment }}</b></p>
+                                            stock.sentiment }}</b></p>
                                 </div>
                             </div>
                         </div>

@@ -16,7 +16,9 @@ onMounted(async () => {
         }[]>(STApi, {
             onResponseError({ response }) {
                 $toast.error(genErrorMessage(response._data, 500))
-            }
+            },
+            retry: 3,
+            retryDelay: 1000
         })
         if (resp) {
             isLoading.value = false

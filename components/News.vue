@@ -16,7 +16,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
                     return
-                }
+                }, retry: 3,
+                retryDelay: 1000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -29,7 +30,8 @@ onMounted(async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
                     return
-                }
+                }, retry: 3,
+                retryDelay: 1000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -69,7 +71,8 @@ watch(chosenTab, async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
                     return
-                }
+                }, retry: 3,
+                retryDelay: 1000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -82,7 +85,8 @@ watch(chosenTab, async () => {
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(500, response._data))
                     return
-                }
+                }, retry: 3,
+                retryDelay: 1000
             })
             if (news.stories) {
                 newsArray.value = news.stories

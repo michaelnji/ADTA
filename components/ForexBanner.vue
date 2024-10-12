@@ -1,52 +1,57 @@
     <script lang="ts" setup>
-    const indexes = [
-        {
-            instrument: 'BTC',
-            price: 65670.901,
-            change: 0.3
-        },
-        {
-            instrument: 'USD/JPY',
-            price: 145.14,
-            change: -0.09
-        },
-        {
-            instrument: 'USDOIL',
-            price: 110.394,
-            change: 0.67
-        },
-        {
-            instrument: 'AAPL',
-            price: 1240.94,
-            change: 0
-        },
+    import { randomInt } from 'mathjs';
 
+    const indexes: { instrument: string, change: number, price: number }[] = []
+    const isLoading = ref(true)
+    const runtimeConfig = useRuntimeConfig()
+    const stockStore = useStockstore()
+    onMounted(async () => {
+        if (stockStore.Stocks)
+            for (let i = 0; i < stockStore.Stocks.length; i++) {
+                if (i > 3 && i < 13) {
+                    const element = stockStore.Stocks[i]
+                    const url = `${runtimeConfig.public.finnhubUrl}/api/v1/quote?symbol=${element.displaySymbol}&token=${runtimeConfig.public.finnhubKey}`
+                    const quote = await $fetch<{ "c": number, "d": number, "dp": number, "h": number, "l": number, "o": number, "pc": number, "t": number }>(url, {
+                        onResponseError({ response }) {
+                            $toast.error(genErrorMessage(500, response._data))
+                            return
+                        },
+                        retry: 3,
+                        retryDelay: 1000
+                    })
+                    if (quote) {
 
-        {
-            instrument: 'GOOGL',
-            price: 40.394,
-            change: 0.7
-        },
-        {
-            instrument: 'NVID',
-            price: 3240.00,
-            change: 300
-        },
-    ]
+                        const data = {
+                            instrument: element.displaySymbol,
+                            change: Number.parseFloat(element.perc_chnge ?? '0'),
+                            price: quote.c
+                        }
+                        indexes.push(data)
+                    }
+                }
+            }
+        isLoading.value = false
+    })
 </script>
 <template>
     <div>
-        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-black items-center">
-            <div class="flex  w-max items-center rounded-2xl  bg-black p3 px-6 gap-x-3" v-for="index in indexes">
+        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-black items-center ">
+            <Skeleton class=" rounded-2xl  bg-stone-900 p6 !min-w-10rem gap-x-3" v-if="isLoading"
+                v-for="index in [0, 1, 2, 3, 4, 5, 6]">
+            </Skeleton>
+            <div class="flex  w-max items-center rounded-2xl bg-black p3 px-6 gap-x-3" v-if="!isLoading"
+                v-for="index in indexes">
                 <h3 class="   font-display text-base sm:text-lg font-bold">{{ index.instrument }}
                 </h3>
                 <div class="flex items-center gap-x-2">
-                    <p class="font-semibold  w-max text-yellow-500 text-base ">
+                    <p class="font-semibold flex items-center gap-x-1  w-max text-yellow-500 text-base ">
+                        $
                         <AnimatedNumbers :amount="index.price" :isDecimal="true" />
                     </p>
-                    <div class=" ml-2 text-sm"
-                        :class="{ 'text-lime-500': index.change > 0, 'text-pink-500': index.change < 0 }">{{
-                        `${index.change >= 0 ? '+' : ''}${index.change}` }}%</div>
+                    <div class=" ml-2 text-sm px2 py1 font-semibold rounded"
+                        :class="{ 'text-lime-500 bg-lime-500 bg-opacity-10': index.change > 0, 'text-pink-500 bg-pink-500 bg-opacity-10': index.change < 0 }">
+                        {{
+                        `${index.change >= 0 ? '+' : ''}${index.change.toFixed(2)}` }}%</div>
                 </div>
             </div>
         </div>

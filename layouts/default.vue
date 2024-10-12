@@ -19,10 +19,10 @@ await stockStore.fetchStocksData()
         </Head>
 
         <Body class="bg-black text-white relative">
-            <div class="p3  bg-opacity-20 flex justify-center items-center gap-x-2 text-center"
+            <div class="p3  bg-lime font-medium text-lime bg-op-10 flex justify-center items-center gap-x-2 text-center"
                 v-if="!stockStore.MarketStatus.isTheStockMarketOpen">
                 <Icon name="solar:info-circle-linear" size="20" />
-                <span> The Market is now closed.</span>
+                <span> {{ stockStore.MarketStatus.stockExchangeName }} is closed</span>
 
             </div>
             <Navbar />
