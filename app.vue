@@ -8,7 +8,7 @@ const { progress, isLoading, error } = useLoadingIndicator({
 
 </script>
 <template>
-  <div class="font-body font-normal max-w-screen  ">
+  <div class="font-body font-normal   ">
     <div class="">
       <Transition name="fadex">
         <div class=" h-screen w-screen fixed z-999  grid place-items-center" v-if="isLoading && !error">

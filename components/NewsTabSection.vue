@@ -11,7 +11,7 @@ function changeTabs(tab: string
 }
 </script>
 <template>
-    <div ref="el" class="w-full grid grid-cols-3 bg-black p-3 rounded-2xl gap-x-3 relative">
+    <div ref="el" class=" grid grid-cols-3 bg-black p-3 rounded-2xl gap-x-3 relative">
         <button :class="{ ' !text-stone-900': tab === 'market' }" class="flex z-1  items-center justify-center "
             @click="changeTabs('market')">
             <h2 class=" font-medium text-sm">Market</h2>
