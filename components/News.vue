@@ -122,10 +122,10 @@ watch(chosenTab, async () => {
 </script>
 <template>
     <div class='transition-all duration-300'>
-        <div class="wfull">
+        <div class="">
             <h3 class="text-lg  !font-normal  opacity-80">Today's News
             </h3>
-            <div class="wfull rounded-3xl  md:px6 md:py8 md:bg-stone-900 !bg-opacity-60 mt4">
+            <div class=" rounded-3xl  md:px6 md:py8 md:bg-stone-900 !bg-opacity-60 mt4">
                 <div class="max-w-sm   ">
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
@@ -140,7 +140,7 @@ watch(chosenTab, async () => {
                                     </h3>
                                     <p class="sm:text-base text-sm mt2 text-pretty font-light line-clamp-2 opacity-90 ">
                                         {{
-                                            news.description }}
+                                        news.description }}
                                     </p>
                                     <div class="mt3 flex gap-x-4">
                                         <span class="text-xs font-medium  text-lime rounded-lg">

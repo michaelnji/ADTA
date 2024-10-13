@@ -36,6 +36,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "isomorphic-ws": "^5.0.0",
+    "json-2-csv": "^5.5.6",
     "jsonwebtoken": "^9.0.2",
     "mathjs": "^13.0.3",
     "nanoid": "^5.0.7",

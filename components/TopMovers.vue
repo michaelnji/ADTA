@@ -37,7 +37,7 @@ onMounted(async () => {
 
 </script>
 <template>
-    <div class="wfull hmax">
+    <div class=" hmax">
         <h3 class="text-lg  !font-normal  opacity-80">Runner-ups</h3>
         <div class="grid sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3  mt4 gap-4 md:gap-8">
             <Skeleton v-if="isLoading" v-for="i in [1, 2, 3]" class="px6 py20 rounded-2xl bg-stone-900">
@@ -58,9 +58,10 @@ onMounted(async () => {
                         </div>
                     </div> -->
                         <div>
-                            <h3 class="font-bold flex  items-start gap-x-2 font-display text-xl">{{ stock.data.symbol }}
+                            <h3 class="font-bold flex  items-start gap-x-2 font-display text-lg sm:text-xl">{{
+                                stock.data.symbol }}
                             </h3>
-                            <div class="flex lg:mt1  items-center gap-x-2">
+                            <div class="flex lg:mt1 text-sm items-center gap-x-2">
                                 <p class=" text-base   opacity-80">{{ stock.data.exchange }}</p>
 
                             </div>
@@ -74,43 +75,43 @@ onMounted(async () => {
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
                             <p :class="{
-    ' !text-pink ': Number.parseFloat(stock.data.percent_change ?? '') < 0,
-    ' !text-lime ': Number.parseFloat(stock.data.percent_change ?? '') >= 0,
+                                ' !text-pink ': Number.parseFloat(stock.data.percent_change ?? '') < 0,
+                                ' !text-lime ': Number.parseFloat(stock.data.percent_change ?? '') >= 0,
 
-}" class=" text-sm "><b class="font-medium   "><span
+                            }" class=" text-xs sm:text-sm "><b class="font-medium   "><span
                                         v-if="Number.parseFloat(stock.data.percent_change ?? '') >= 0">+</span>{{
-                                            Number.parseFloat(stock.data.percent_change ?? '').toFixed(0)
-                                        }}%</b> <span class="opacity-70"></span>
+                                    Number.parseFloat(stock.data.percent_change ?? '').toFixed(0)
+                                    }}%</b> <span class="opacity-70"></span>
                             </p>
 
                         </div>
                     </div>
                 </div>
-                <div class="border-b border-stone-900 sm:border-stone-800 my4 wfull"></div>
-                <div class="flex justify-between max-w-full">
+                <div class="border-b border-stone-900 sm:border-stone-800 my4 "></div>
+                <div class="flex justify-between">
                     <div>
-                        <p class="op80 text-sm">
+                        <p class="op80 text-xs sm:text-sm">
                             RV
                         </p>
-                        <p>
+                        <p class="text-xs sm:text-sm">
                             {{ stock.rv.toFixed(3) }}
                         </p>
 
                     </div>
                     <div>
-                        <p class="op80 text-sm">
+                        <p class="op80 text-xs sm:text-sm">
                             Float
                         </p>
-                        <p>
+                        <p class="text-xs sm:text-sm">
                             {{ stock.float.toFixed(3) }}
                         </p>
 
                     </div>
                     <div>
-                        <p class="op80 text-sm">
+                        <p class="op80 text-xs sm:text-sm">
                             Points
                         </p>
-                        <p>
+                        <p class="text-xs sm:text-sm">
                             {{ stock.points }}
                         </p>
 

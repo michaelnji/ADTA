@@ -45,6 +45,7 @@ const links = ref([
 
 ])
 const route = useRoute()
+const router = useRouter()
 const elv = useTemplateRef('elv')
 const elvtwo = useTemplateRef('elvtwo')
 const distanceVar = useCssVar('--distance', elv)
@@ -53,10 +54,17 @@ const distanceVarTwo = useCssVar('--distance-two', elvtwo)
 onMounted(() => {
     setTimeout(() => {
         distanceVar.value = `${links.value.indexOf(links.value.find((x) => x.link === route.fullPath) ?? links.value[0]) * 4}rem`
-        distanceVarTwo.value = `${links.value.indexOf(links.value.find((x) => x.link === route.fullPath) ?? links.value[0]) * 4}rem`
+        distanceVarTwo.value = `${links.value.indexOf(links.value.find((x) => x.link === route.fullPath) ?? links.value[0]) * 3.5}rem`
     }, 100)
 })
+watch(route, () => {
+    distanceVar.value = `${links.value.indexOf(links.value.find((x) => x.link === route.fullPath) ?? links.value[0]) * 4}rem`
 
+})
+const prev = ref()
+router.beforeEach(() => {
+    prev.value = route.fullPath
+})
 </script>
 <template>
     <ClientOnly>
@@ -85,19 +93,19 @@ onMounted(() => {
                 <div class="z-1" v-for="link, i in links">
                     <NuxtLink @click="() => {
                         distanceVar = `${i * 4}rem`
-                        distanceVarTwo = `${i * 4}rem`
+    distanceVarTwo = `${i * 3.5}rem`
 
                     }" class="z-1" v-if="i < 5" :to="link.link">
-                        <div class=" size-14    opacity-50 lg:hover:opacity-100 active:!opacity-50  grid place-items-center group rounded-full"
+                        <div class=" size-12    opacity-50 lg:hover:opacity-100 active:!opacity-50  grid place-items-center group rounded-full"
                             :class="{
-                                'text-black scale-105 !opacity-100': route.fullPath === link.link
+    'text-black scale-105 !opacity-100': route.fullPath === link.link || route.fullPath === '/settings' && prev === link.link
                             }">
                             <Icon :name="link.iconActive" size="32" />
                         </div>
                     </NuxtLink>
                 </div>
                 <div style=" --distance-two:0rem; transform: translateX(var(--distance-two))" ref="elvtwo"
-                    class="size-14 transition duration-300  p2 absolute left-0 top-0 bottom-0 bg-lime rounded-full ">
+                    class="size-12 transition duration-300  p2 absolute left-0 top-0 bottom-0 bg-lime rounded-full ">
                 </div>
             </div>
         </div>

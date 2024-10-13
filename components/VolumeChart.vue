@@ -12,9 +12,9 @@ const style = computed(() => `height:${props.height}; width: ${props.width};`)
 
 <template>
     <div class="dark">
-        <h3 class="text-sm  !font-normal  opacity-80">Volume Traded
-        </h3>
-        <BarChart :style="style" :show-grid-line="false" :data="data" index="time" :colors="['#aaa']"
+        <!-- <h3 class="text-sm  !font-normal  opacity-80">Volume Traded
+        </h3> -->
+        <BarChart :style="style" :show-grid-line="false" :data="data" index="time" :colors="['#f06595']"
             :rounded-corners="6" :categories="['volume']" :y-formatter="(tick, i) => {
                 return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`

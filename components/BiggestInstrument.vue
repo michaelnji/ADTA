@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { number } from "mathjs";
 import { isSaturday, isWeekend, subDays } from "date-fns";
 import { format } from "date-fns/format";
 import WebSocket from "isomorphic-ws";
@@ -88,7 +87,7 @@ onMounted(async () => {
                 method: "POST",
                 body: {
                     symbol: props.stock.displaySymbol,
-                    interval: "5min",
+                    interval: "1min",
                     // outputsize: 20000,
                     date: "today",
                 },
@@ -122,14 +121,14 @@ onMounted(async () => {
                 isLoading.value = false;
             }
         }
-        else if (!stockStore.MarketStatus?.isTheStockMarketOpen) {
+        else if (!stockStore.MarketStatus?.isTheStockMarketOpen && !isWeekend(now)) {
             const resp = await $fetch<
                 ServerResponse<StatusCode, Timeseries["values"]>
             >("/api/timeseries/stock", {
                 method: "POST",
                 body: {
                     symbol: props.stock.displaySymbol,
-                    interval: "1min",
+                    interval: "5min",
                     // outputsize: 20000,
                     date: 'yesterday',
                 },
@@ -175,7 +174,7 @@ onMounted(async () => {
                     // outputsize: 20000,
                     date: isSaturday(now)
                         ? format(new Date(subDays(now, 1).setHours(7)), "yyyy-LL-dd")
-                        : format(new Date(subDays(now, 2).setHours(7)), "yyyy-LL-dd"),
+                        : format(new Date(subDays(now, 2).setHours(15)), "yyyy-LL-dd"),
                 },
                 onResponseError({ response }) {
                     $toast.error(genErrorMessage(response._data.message, 500));
@@ -220,7 +219,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
     <div>
-        <div class="wfull rounded-3xl  md:p6 md:py8 md:bg-stone-900 !bg-opacity-60">
+        <div class=" rounded-3xl  md:p6 md:py8 md:bg-stone-900 !bg-opacity-60">
             <h3 class="text-lg !font-normal  opacity-80">Best Performer
             </h3>
             <div class=" mt4">
@@ -238,14 +237,15 @@ onBeforeUnmount(() => {
                                 ' !text-pink ': Number.parseFloat(quote?.percent_change ?? '') < 0,
                                 ' !text-lime ': Number.parseFloat(quote?.percent_change ?? '') >= 0,
 
-                            }" class=" text-sm  my1"><b class="font-extrabold font-mono  "><span
+                            }" class=" text-xs sm:text-sm  my1"><b class="font-extrabold font-mono  "><span
                                         v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-                                    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                            Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
                                     }}%</b> <span class="opacity-70"></span>
                             </p>
                             <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
-                                <p class=" text-sm line-clamp-1   opacity-80">{{ quote?.name }}</p>
-                                <p class=" text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}</p>
+                                <p class=" text-xs sm:text-sm line-clamp-1   opacity-80">{{ quote?.name }}</p>
+                                <p class=" text-xs sm:text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}
+                                </p>
 
                             </div>
                             <Skeleton v-if="isLoading" class="my1 h5 w-15 bg-stone-900 rounded-md "> </Skeleton>
@@ -269,7 +269,7 @@ onBeforeUnmount(() => {
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
                             <p v-if="!isLoading"
-                                class=" text-sm p1 px3 text-lime-500 bg-lime-500 flex items-center justify-center gap-x-1 bg-opacity-10 rounded-md ">
+                                class=" text-xs sm:text-sm p1 px3 text-lime-500 bg-lime-500 flex items-center justify-center gap-x-1 bg-opacity-10 rounded-md ">
                                 <Icon name="solar:arrow-up-linear" />
                                 <b class="font-medium">
                                     {{ Number.parseFloat(quote?.high ??
@@ -284,7 +284,7 @@ onBeforeUnmount(() => {
                             </Skeleton>
 
                             <p v-if="!isLoading"
-                                class=" text-sm p1 px3 bg-pink-500  bg-opacity-10 rounded-md flex items-center justify-center gap-x-1 text-pink-500">
+                                class=" text-xs sm:text-sm p1 px3 bg-pink-500  bg-opacity-10 rounded-md flex items-center justify-center gap-x-1 text-pink-500">
                                 <Icon name="solar:arrow-down-linear" />
                                 <b class="font-medium ">
                                     {{ Number.parseFloat(quote?.low ??
@@ -295,12 +295,12 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
                 <div class="mt3 md:mt6 ">
-                    <TrendChart type="line" title="price" v-if="!isLoading" :data="timeseries" height="21rem"
-                        width="100%" />
+                    <TrendChart type="area" title="price" v-if="!isLoading" :data="timeseries" height="21rem"
+                        width="" />
                     <Skeleton v-if="isLoading" class=" h-21rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
                     <div class=" grid md:grid-cols-2 gap-4 md:gap-x-12">
                         <div class="mt16" v-if="!isLoading">
-                            <VolumeChart :data="volumeseries" height="13rem" width="100%" />
+                            <VolumeChart :data="volumeseries" height="13rem" width="" />
                         </div>
 
                         <Skeleton v-if="isLoading" class=" h-13rem bg-stone-900 w-full  rounded-2xl mt6 "> </Skeleton>
@@ -319,50 +319,52 @@ onBeforeUnmount(() => {
                         </div>
                         <div v-if="!isLoading" class="!mt12 grid  gap-3">
 
-                            <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
+                            <div
+                                class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center justify-between wfull">
 
-                                <div class="flex gap-3 justify-between wfull">
+                                <div class="flex gap-3 wfull  justify-between ">
                                     <div>
-                                        <h3 class="  text-sm">Pevious Close</h3>
-                                        <p class=" text-lg "><b class="font-medium ">{{
-                                                Number.parseFloat(stock.previous_close ?? '0').toFixed(2) }}</b>
+                                        <h3 class="  text-xs sm:text-sm">Pevious </h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.previous_close ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
-                                        <h3 class="  text-sm">Float</h3>
-                                        <p class=" text-lg "><b class="font-medium ">{{
-                                                Number.parseFloat(stock.float ?? '0').toFixed(2) }}</b>
+                                        <h3 class="  text-xs sm:text-sm">Float</h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.float ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
-                                        <h3 class="  text-sm">Relative Volume</h3>
-                                        <p class=" text-lg "><b class="font-medium ">{{
-                                                Number.parseFloat(stock.rv ?? '0').toFixed(2) }}</b>
+                                        <h3 class="  text-xs sm:text-sm">RV </h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(stock.rv ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
 
 
                                 </div>
                             </div>
-                            <div class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center">
+                            <div
+                                class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center justify-between">
 
-                                <div class="flex gap-3 justify-between wfull">
+                                <div class="flex gap-3 justify-between   wfull">
                                     <div>
-                                        <h3 class="  text-sm">Year high</h3>
-                                        <p class=" text-lg "><b class="font-medium text-lime-500">{{
-                                                Number.parseFloat(quote?.fifty_two_week.high ?? '0').toFixed(2) }}</b>
+                                        <h3 class="  text-xs sm:text-sm">Year high</h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium text-lime-500">{{
+                                            Number.parseFloat(quote?.fifty_two_week.high ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
-                                        <h3 class="  text-sm">Year low</h3>
-                                        <p class=" text-lg "><b class="font-medium text-pink-500">{{
-                                                Number.parseFloat(quote?.fifty_two_week.low ?? '0').toFixed(2) }}</b>
+                                        <h3 class="  text-xs sm:text-sm">Year low</h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium text-pink-500">{{
+                                            Number.parseFloat(quote?.fifty_two_week.low ?? '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
                                     <div>
-                                        <h3 class="  text-sm">% change</h3>
-                                        <p class=" text-lg "><b class="font-medium ">{{
-                                                Number.parseFloat(quote?.fifty_two_week.high_change_percent ??
+                                        <h3 class="  text-xs sm:text-sm">% change</h3>
+                                        <p class=" text-sm sm:text-lg "><b class="font-medium ">{{
+                                            Number.parseFloat(quote?.fifty_two_week.high_change_percent ??
                                                 '0').toFixed(2) }}</b>
                                         </p>
                                     </div>
@@ -374,8 +376,8 @@ onBeforeUnmount(() => {
                                     <Icon name="solar:course-up-linear" size="24" />
                                 </div>
                                 <div>
-                                    <h3 class="  text-sm">Sentiment</h3>
-                                    <p class=" text-lg "><b class="font-medium text-lime-500">{{
+                                    <h3 class="  text-xs sm:text-sm">Sentiment</h3>
+                                    <p class=" text-sm sm:text-lg "><b class="font-medium text-lime-500">{{
                                             stock.sentiment }}</b></p>
                                 </div>
                             </div>
