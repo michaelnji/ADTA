@@ -59,7 +59,11 @@ export default defineNuxtConfig({
         "solar:arrow-down-linear",
         "solar:arrow-up-linear",
         'solar:info-circle-linear',
-        'mingcute:sparkles-2-fill'
+        'mingcute:sparkles-2-fill',
+        'svg-spinners:bars-rotate-fade',
+        'svg-spinners:bars-scale-middle',
+        "solar:refresh-bold"
+
 
 
       ],

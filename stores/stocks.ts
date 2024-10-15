@@ -3,22 +3,26 @@ import type { ServerResponse, StatusCode } from '~/server/types'
 import type { MarketStatus } from '~/server/types/fx.types'
 import type { Stock } from '~/types/index.types'
 export const useStockstore = defineStore('Stocks', () => {
-    const Stocks = ref<Stock[]>()
+    const Stocks = ref<Stock[]>([])
     const MarketStatus = ref<MarketStatus>()
     async function fetchStocksData() {
-
-        try {
-
-            const resp = await $fetch<ServerResponse<StatusCode, Stock[]>>("/api/stocks/fetch", {
+        const resp = await $fetch<ServerResponse<StatusCode, Stock[]>>("/api/stocks/fetch", {
                 method: "GET",
                 onResponseError({ response }) {
                     throw new Error(genErrorMessage(response._data.message, 500))
                 }
             })
-            if (resp.ok && resp.data) {
+        if (resp.ok && resp.data && resp.data.length > 0) {
 
                 Stocks.value = resp.data
             }
+        else if (resp.ok && resp.data && resp.data.length <= 0) {
+
+            throw new Error(genErrorMessage('Scanner is at work', 500))
+        }
+        else {
+            throw new Error(genErrorMessage(resp.message, 500))
+        }
             const resp2 = await $fetch<ServerResponse<StatusCode, MarketStatus>>("/api/market/status", {
                 method: "GET",
                 onResponseError({ response }) {
@@ -27,13 +31,12 @@ export const useStockstore = defineStore('Stocks', () => {
                 }
             })
             if (resp2.ok && resp2.data) {
-                console.log(resp2.data)
+
                 MarketStatus.value = resp2.data
+                return
             }
 
-        } catch (error) {
-            // throw new Error(`${error}`)
-        }
+        throw new Error(genErrorMessage(resp2.message, 500))
 
     }
 

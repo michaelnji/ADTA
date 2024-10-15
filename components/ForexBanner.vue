@@ -1,12 +1,12 @@
     <script lang="ts" setup>
     import { randomInt } from 'mathjs';
 
-    const indexes: { instrument: string, change: number, price: number }[] = []
+    let indexes: { instrument: string, change: number, price: number }[] = []
     const isLoading = ref(true)
     const runtimeConfig = useRuntimeConfig()
     const stockStore = useStockstore()
-    onMounted(async () => {
-        if (stockStore.Stocks)
+    async function fetchData() {
+        isLoading.value = true
             for (let i = 0; i < stockStore.Stocks.length; i++) {
                 if (i > 3 && i < 13) {
                     const element = stockStore.Stocks[i]
@@ -31,15 +31,24 @@
                 }
             }
         isLoading.value = false
+    }
+    onMounted(async () => {
+        indexes = []
+        await fetchData()
     })
+    watch(() => stockStore.Stocks, async () => {
+        indexes = []
+        await fetchData()
+    })
+
 </script>
 <template>
     <div>
-        <div class="flex max-w-screen overflow-x-auto p3 gap-x-4 bg-black items-center ">
-            <Skeleton class=" rounded-2xl  bg-stone-900 p6 !min-w-10rem gap-x-3" v-if="isLoading"
-                v-for="index in [0, 1, 2, 3, 4, 5, 6]">
+        <div class="flex max-w-screen overflow-x-auto p3 gap-x-8 bg-black items-center ">
+            <Skeleton class=" rounded-2xl  bg-stone-900 p3.5 !min-w-10rem gap-x-3" v-if="isLoading"
+                v-for="index in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]">
             </Skeleton>
-            <div class="flex  w-max items-center rounded-2xl bg-black p3 px-6 gap-x-3" v-if="!isLoading"
+            <div class="flex  w-max items-center rounded-2xl bg-black  gap-x-3" v-if="!isLoading"
                 v-for="index in indexes">
                 <h3 class="   font-display text-base sm:text-lg font-bold">{{ index.instrument }}
                 </h3>

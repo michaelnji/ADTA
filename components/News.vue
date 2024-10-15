@@ -11,6 +11,7 @@ onMounted(async () => {
     try {
         isLoading.value = true
         if (chosenTab.value === 'market') {
+            newsArray.value = []
             const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US (or E:${chosenTab.value} (or E:breaking_news E:cpi E:fomc E:breaking E:inflation E:index E:earnings E:SEC)))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
@@ -25,6 +26,7 @@ onMounted(async () => {
             }
         }
         else if (chosenTab.value === 'analysis') {
+            newsArray.value = []
             const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US E:${chosenTab.value} (or E:breaking_news E:report E:analyst E:filing))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
@@ -40,10 +42,11 @@ onMounted(async () => {
         }
         else {
             if (stockStore.Stocks) {
-                for (let i = 0; i < 3; i++) {
+                newsArray.value = []
+                for (let i = 0; i < stockStore.Stocks.length - 12; i++) {
 
                     const element = stockStore.Stocks[i]
-                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(and T:earning T:sec T:sec_fin tt:${element.displaySymbol})`
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=3&(and T:curated (or tt:breaking tt:jump tt:record tt:Warren))`
                     const news = await $fetch<TickerNews>(newsUrl, {
                         onResponseError({ response }) {
                             $toast.error(genErrorMessage(500, response._data))
@@ -66,6 +69,7 @@ watch(chosenTab, async () => {
     try {
         isLoading.value = true
         if (chosenTab.value === 'market') {
+            newsArray.value = []
             const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US (or E:${chosenTab.value} (or E:breaking_news E:cpi E:fomc E:breaking E:inflation E:index E:earnings E:SEC)))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
@@ -80,6 +84,7 @@ watch(chosenTab, async () => {
             }
         }
         else if (chosenTab.value === 'analysis') {
+            newsArray.value = []
             const newsUrl = `${runtimeConfig.public.tickerUrl}?q=(or E:US E:${chosenTab.value} (or E:breaking_news E:report E:analyst E:filing))&n=5`
             const news = await $fetch<TickerNews>(newsUrl, {
                 onResponseError({ response }) {
@@ -95,10 +100,11 @@ watch(chosenTab, async () => {
         }
         else {
             if (stockStore.Stocks) {
-                for (let i = 0; i < 3; i++) {
+                newsArray.value = []
+                for (let i = 0; i < stockStore.Stocks.length - 12; i++) {
 
                     const element = stockStore.Stocks[i]
-                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=1&(and T:earning T:sec T:sec_fin tt:${element.displaySymbol})`
+                    const newsUrl = `${runtimeConfig.public.tickerUrl}?q=z:${element.displaySymbol}&n=3&(and T:curated (or tt:breaking tt:jump tt:record tt:Warren))`
                     const news = await $fetch<TickerNews>(newsUrl, {
                         onResponseError({ response }) {
                             $toast.error(genErrorMessage(500, response._data))
@@ -130,7 +136,7 @@ watch(chosenTab, async () => {
                     <NewsTabSection :tab="chosenTab" @tab-change="(e) => chosenTab = e" />
                 </div>
 
-                <div class="grid gap-y-3 py6 md:px3 xl:h-45rem xl:overflow-y-auto">
+                <div class="flex flex-col gap-y-3 py6 md:px3 xl:h-45rem xl:overflow-y-auto">
                     <div v-for="news, i in newsArray" v-if="!isLoading">
                         <NuxtLink target="_blank" :to="news.url">
                             <div class="rounded-xl transition duration-300 hover:bg-stone-900 p3 flex gap-x-4">
