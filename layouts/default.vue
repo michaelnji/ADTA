@@ -5,9 +5,16 @@ import { useStockstore } from '~/stores/stocks';
 
 const route = useRoute()
 const title = computed(() => route.meta.title ?? 'DJS')
-const fxStore = useFxPairStore()
 const stockStore = useStockstore()
-await stockStore.fetchStocksData()
+try {
+    await stockStore.fetchStocksData()
+} catch (error) {
+    throw createError({
+        status: 500,
+        message: `${error}`,
+        fatal: true
+    })
+}
 </script>
 
 <template>
@@ -36,11 +43,14 @@ await stockStore.fetchStocksData()
                     <span> Market is open</span>
 
                 </div>
-                <NuxtLink to="/settings" class="opacity-50 hover:opacity-100 hover:text-lime" :class="{
-                    '!text-lime !opacity-100': route.fullPath === '/settings'
-                }">
-                    <Icon size="24" name="solar:settings-minimalistic-linear" />
-                </NuxtLink>
+                <div class="flex items-center gap-x-3">
+                    <NuxtLink to="/settings" class="opacity-50 hover:opacity-100 hover:text-lime" :class="{
+                        '!text-lime !opacity-100': route.fullPath === '/settings'
+                    }">
+                        <Icon size="24" name="solar:settings-minimalistic-linear" />
+                    </NuxtLink>
+                    <RefetchStocks />
+                </div>
             </div>
             <div class="p2 px3 wfull sm:!hidden  bg-pink font-medium text-pink text-xs  bg-op-10 flex justify-center items-center gap-x-2 text-center"
                 v-if="!stockStore.MarketStatus.isTheStockMarketOpen">

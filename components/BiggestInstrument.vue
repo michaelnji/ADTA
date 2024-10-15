@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { isSaturday, isWeekend, subDays } from "date-fns";
+import { isMonday, isSaturday, isWeekend, subDays } from "date-fns";
 import { format } from "date-fns/format";
 import WebSocket from "isomorphic-ws";
 import type { ServerResponse, StatusCode } from "~/server/types";
@@ -24,7 +24,7 @@ const timeseries = ref<TS[]>([]);
 
 const volumeseries = ref<VolumeSeries[]>([]);
 const isLoading = ref(true);
-const currentPrice = ref("");
+const currentPrice = ref(0);
 const ws = new WebSocket(url);
 const quote = ref<Quote12>();
 ws.onopen = function open() {
@@ -46,18 +46,18 @@ ws.onmessage = function incoming(data) {
     if (JSON.parse(data.data.toString()).data) {
         const info = JSON.parse(data.data.toString()).data[0];
         if (info) {
-            currentPrice.value = `${info.p}`;
+            currentPrice.value = info.p;
         }
     }
     setTimeout(function timeout() {
         ws.send(JSON.stringify({ type: "heartbeat", timestamp: Date.now() }));
     }, 500);
 };
-const unsubscribe = (symbol: string) => {
-    ws.send(JSON.stringify({ type: "unsubscribe", symbol: symbol }));
-};
-onMounted(async () => {
+async function fetchData() {
     try {
+        isLoading.value = true
+        timeseries.value = []
+        volumeseries.value = []
         // $toast.info(stockStore.MarketStatus?.afterHours.toString() ?? '')
         const now = new Date();
         const resp = await $fetch<ServerResponse<StatusCode, Quote12>>(
@@ -77,7 +77,48 @@ onMounted(async () => {
         if (resp.ok && resp.data) {
             quote.value = resp.data;
         }
-        if (
+        if (!stockStore.MarketStatus?.isTheStockMarketOpen && isMonday(now) && now.getHours() < 15) {
+            const resp = await $fetch<
+                ServerResponse<StatusCode, Timeseries["values"]>
+            >("/api/timeseries/stock", {
+                method: "POST",
+                body: {
+                    symbol: props.stock.displaySymbol,
+                    interval: "5min",
+
+                    date: format(new Date(subDays(now, 3).setHours(7)), "yyyy-LL-dd"),
+                },
+                onResponseError({ response }) {
+                    $toast.error(genErrorMessage(response._data.message, 500));
+                },
+                retry: 3,
+                retryDelay: 1000
+            });
+
+            if (resp.ok && resp.data) {
+                const reversedData = resp.data.reverse();
+                for (const element of reversedData) {
+                    if (reversedData.indexOf(element) % 60 === 0) {
+                        const v = {
+                            time: format(element.datetime, "hh:mm aaa"),
+                            volume: Number.parseInt(element.volume),
+                        };
+
+                        volumeseries.value = [...volumeseries.value, v];
+                    }
+                    const s = {
+                        time: format(element.datetime, "hh:mm aaa"),
+                        price: Number.parseInt(element.close),
+                    };
+
+                    timeseries.value = [...timeseries.value, s];
+                }
+                currentPrice.value =
+                    timeseries.value[timeseries.value.length - 1].price;
+                isLoading.value = false;
+            }
+        }
+        else if (
             (!isWeekend(now) && quote.value?.is_market_open) ||
             (!isWeekend(now) && !quote.value?.is_market_open && now.getHours() > 15)
         ) {
@@ -88,7 +129,7 @@ onMounted(async () => {
                 body: {
                     symbol: props.stock.displaySymbol,
                     interval: "1min",
-                    // outputsize: 20000,
+
                     date: "today",
                 },
                 onResponseError({ response }) {
@@ -117,7 +158,7 @@ onMounted(async () => {
                     timeseries.value = [...timeseries.value, s];
                 }
                 currentPrice.value =
-                    timeseries.value[timeseries.value.length - 1].price.toString();
+                    timeseries.value[timeseries.value.length - 1].price;
                 isLoading.value = false;
             }
         }
@@ -129,7 +170,7 @@ onMounted(async () => {
                 body: {
                     symbol: props.stock.displaySymbol,
                     interval: "5min",
-                    // outputsize: 20000,
+
                     date: 'yesterday',
                 },
                 onResponseError({ response }) {
@@ -158,10 +199,11 @@ onMounted(async () => {
                     timeseries.value = [...timeseries.value, s];
                 }
                 currentPrice.value =
-                    timeseries.value[timeseries.value.length - 1].price.toString();
+                    timeseries.value[timeseries.value.length - 1].price;
                 isLoading.value = false;
             }
         }
+
 
         else if (isWeekend(now)) {
             const resp = await $fetch<
@@ -171,7 +213,7 @@ onMounted(async () => {
                 body: {
                     symbol: props.stock.displaySymbol,
                     interval: "5min",
-                    // outputsize: 20000,
+
                     date: isSaturday(now)
                         ? format(new Date(subDays(now, 1).setHours(7)), "yyyy-LL-dd")
                         : format(new Date(subDays(now, 2).setHours(15)), "yyyy-LL-dd"),
@@ -202,7 +244,7 @@ onMounted(async () => {
                     timeseries.value = [...timeseries.value, s];
                 }
                 currentPrice.value =
-                    timeseries.value[timeseries.value.length - 1].price.toString();
+                    timeseries.value[timeseries.value.length - 1].price;
                 isLoading.value = false;
             }
         }
@@ -211,7 +253,25 @@ onMounted(async () => {
             isLoading.value = false;
         }
     } catch (error) { }
+}
+const unsubscribe = (symbol: string) => {
+    ws.send(JSON.stringify({ type: "unsubscribe", symbol: symbol }));
+};
+onMounted(async () => {
+    await fetchData()
 });
+watch(() => props.stock, async () => {
+    await fetchData()
+    ws.send(
+        JSON.stringify({
+            type: "subscribe",
+            symbol: props.stock.displaySymbol,
+        }),
+    );
+
+})
+
+
 onBeforeUnmount(() => {
     unsubscribe(props.stock.displaySymbol ?? "");
     // ws.close()
@@ -239,7 +299,7 @@ onBeforeUnmount(() => {
 
                             }" class=" text-xs sm:text-sm  my1"><b class="font-extrabold font-mono  "><span
                                         v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-                                            Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
                                     }}%</b> <span class="opacity-70"></span>
                             </p>
                             <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
@@ -261,8 +321,7 @@ onBeforeUnmount(() => {
                     <div class="flex mt4 sm:mt0 flex-col  sm:items-end gap-y-1">
                         <p class="   text-3xl  flex items-center  gap-x-2 font-medium">
                             <span> $</span>
-                            <AnimatedNumbers :format="true" :amount="Number.parseFloat(currentPrice)"
-                                :is-decimal="true" />
+                            <AnimatedNumbers :format="true" :amount="currentPrice" :is-decimal="true" />
 
 
 

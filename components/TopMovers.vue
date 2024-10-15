@@ -3,36 +3,50 @@ import { point } from '@unovis/ts/components/scatter/style';
 import type { ServerResponse, StatusCode } from '~/server/types';
 import type { Quote12 } from '~/types/index.types';
 const stockStore = useStockstore()
-const top = ref<{ data: Quote12, rv: number, float: number, points: number }[]>([])
+const stocks = ref(stockStore.Stocks)
+let top: { data: Quote12, rv: number, float: number, points: number }[] = []
 const isLoading = ref(true)
-onMounted(async () => {
-    if (stockStore.Stocks) {
-        for (const stock of stockStore.Stocks) {
-            if (stock.position && stock.position > 1 && stock.position <= 4) {
-                const resp = await $fetch<ServerResponse<StatusCode, Quote12>>("/api/stocks/quote", {
-                    method: "POST",
-                    body: {
-                        displaySymbol: stock.displaySymbol,
-                    }, onResponseError({ response }) {
+async function fetchData() {
+    isLoading.value = true
+    top = []
+    for (const stock of stocks.value) {
+        if (stock.position && stock.position > 1 && stock.position <= 4) {
+            const resp = await $fetch<ServerResponse<StatusCode, Quote12>>("/api/stocks/quote", {
+                method: "POST",
+                body: {
+                    displaySymbol: stock.displaySymbol,
+                }, onResponseError({ response }) {
 
-                        $toast.error(genErrorMessage(response._data.message, 500))
-                    }, retry: 3,
-                    retryDelay: 1000
-                })
-                if (resp.ok && resp.data) {
-                    const el = {
-                        data: resp.data,
-                        rv: Number.parseFloat(stock.rv ?? '0'),
-                        float: Number.parseFloat(stock.float ?? '0'),
-                        points: stock.points ?? 0
-
-                    }
-                    top.value.push(el)
+                    $toast.error(genErrorMessage(response._data.message, 500))
+                }, retry: 3,
+                retryDelay: 1000
+            })
+            if (resp.ok && resp.data) {
+                const el = {
+                    data: resp.data,
+                    rv: Number.parseFloat(stock.rv ?? '0'),
+                    float: Number.parseFloat(stock.float ?? '0'),
+                    points: stock.points ?? 0
                 }
+
+                top = [...top, el]
             }
         }
+
+    }
+    if (top.length >= 1) {
+
         isLoading.value = false
     }
+}
+onMounted(async () => {
+    top = []
+    await fetchData()
+})
+watch(() => stockStore.Stocks, async () => {
+    top = []
+    await fetchData()
+
 })
 
 </script>
@@ -71,7 +85,7 @@ onMounted(async () => {
                     <div class="">
                         <p class="text-lg flex  gap-x-1 font-bold ">
                             <span> $</span>
-                            <AnimatedNumbers :format="true" :amount="Number.parseFloat(stock.data.open)" />
+                            <AnimatedNumbers :format="true" :amount="Number.parseFloat(stock.data.close)" />
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
                             <p :class="{
@@ -80,8 +94,8 @@ onMounted(async () => {
 
                             }" class=" text-xs sm:text-sm "><b class="font-medium   "><span
                                         v-if="Number.parseFloat(stock.data.percent_change ?? '') >= 0">+</span>{{
-                                    Number.parseFloat(stock.data.percent_change ?? '').toFixed(0)
-                                    }}%</b> <span class="opacity-70"></span>
+                                            Number.parseFloat(stock.data.percent_change ?? '').toFixed(0)
+                                        }}%</b> <span class="opacity-70"></span>
                             </p>
 
                         </div>

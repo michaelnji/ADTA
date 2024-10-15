@@ -38,30 +38,30 @@
     animation-duration: 150ms;
     margin: .5em 0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    border-radius: .7em;
+    border-radius: 9999px;
     pointer-events: auto;
     opacity: .92;
     color: #fff;
     min-height: 3em;
     cursor: pointer;
     font-family: 'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        @apply !font-medium !text-sm
+        @apply !font-medium !text-sm border border-stone-900
 }
 
 .v-toast__item--success {
-@apply bg-black text-lime-500
+@apply bg-black text-lime-500 border-lime-950
 }
 
 .v-toast__item--info {
-    @apply bg-blue-500
+    @ap@apply bg-black text-blue-500 border-blue-950
 }
 
 .v-toast__item--warning {
-    @apply bg-amber-500 text-stone-900
+@apply bg-black text-amber-500 border-amber-950
 }
 
 .v-toast__item--error {
-    @apply bg-black text-pink-500
+@apply bg-black text-pink-500 border-pink-950
 }
 
 .v-toast__item--default {

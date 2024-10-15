@@ -69,7 +69,7 @@ router.beforeEach(() => {
 <template>
     <ClientOnly>
         <div
-            class="p4  rounded-full fixed hidden sm:block wfull bg-stone-950 bottom-6 left-1/2 -translate-x-1/2 z-1 shadow-xl  !max-w-max">
+            class="p4  rounded-full fixed hidden sm:block wfull bg-black bottom-6 left-1/2 -translate-x-1/2 z-1 shadow-xl  !max-w-max">
             <div class="relative flex items-center gap-x-2">
                 <NuxtLink @click="() => {
                     distanceVar = `${i * 4}rem`
@@ -88,7 +88,7 @@ router.beforeEach(() => {
             </div>
         </div>
         <div
-            class="p4 grid place-items-center rounded-t-2xl fixed  sm:hidden wfull bg-stone-950  bottom-0 left-0 right-0 z-10 ">
+            class="p4 grid place-items-center bg-gradient-to-b from-stone-950 via-black to-black backdrop-blur-lg  fixed  sm:hidden wfull   bottom-0 left-0 right-0 z-10 ">
             <div class="relative flex items-center gap-x-2">
                 <div class="z-1" v-for="link, i in links">
                     <NuxtLink @click="() => {
