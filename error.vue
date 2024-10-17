@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app';
 import { isFuture, addMinutes, format, formatDistance, formatDistanceToNow } from 'date-fns';
+import { disposePinia } from 'pinia';
 
 const props = defineProps({
     error: Object as () => NuxtError
 })
 function reloadPage() {
+    useStockstore().$reset()
     reloadNuxtApp()
 }
 const router = useRouter()

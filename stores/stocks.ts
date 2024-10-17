@@ -10,7 +10,8 @@ export const useStockstore = defineStore('Stocks', () => {
                 method: "GET",
                 onResponseError({ response }) {
                     throw new Error(genErrorMessage(response._data.message, 500))
-                }
+            }, retry: 3,
+            retryDelay: 1000
             })
         if (resp.ok && resp.data && resp.data.length > 0) {
 
@@ -28,7 +29,8 @@ export const useStockstore = defineStore('Stocks', () => {
                 onResponseError({ response }) {
                     // $toast.error(response._data)
                     throw new Error(genErrorMessage(response._data.message, 500))
-                }
+                }, retry: 3,
+                retryDelay: 1000
             })
             if (resp2.ok && resp2.data) {
 
@@ -40,7 +42,11 @@ export const useStockstore = defineStore('Stocks', () => {
 
     }
 
-    return { Stocks, fetchStocksData, MarketStatus }
+    function $reset() {
+        Stocks.value = []
+        MarketStatus.value = undefined
+    }
+    return { Stocks, fetchStocksData, MarketStatus, $reset }
 })
 
 if (import.meta.hot) {
