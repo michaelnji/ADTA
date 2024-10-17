@@ -55,7 +55,8 @@
                 <div class="flex items-center gap-x-2">
                     <p class="font-semibold flex items-center gap-x-1  w-max text-yellow-500 text-base ">
                         $
-                        <AnimatedNumbers :amount="index.price" :isDecimal="true" />
+                        <AnimatedNumbers :amount="Number.parseFloat(index.price.toFixed(3))" :isDecimal="true"
+                            :format="true" />
                     </p>
                     <div class=" ml-2 text-sm px2 py1 font-semibold rounded"
                         :class="{ 'text-lime-500 bg-lime-500 bg-opacity-10': index.change > 0, 'text-pink-500 bg-pink-500 bg-opacity-10': index.change < 0 }">
