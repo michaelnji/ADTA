@@ -71,7 +71,7 @@ async function fetchData() {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
                 retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             },
         );
         if (resp.ok && resp.data) {
@@ -92,7 +92,7 @@ async function fetchData() {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
                 retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             });
 
             if (resp.ok && resp.data) {
@@ -136,7 +136,7 @@ async function fetchData() {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
                 retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             });
             if (resp.ok && resp.data) {
                 const reversedData = resp.data.reverse();
@@ -177,7 +177,7 @@ async function fetchData() {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
                 retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             });
 
             if (resp.ok && resp.data) {
@@ -222,7 +222,7 @@ async function fetchData() {
                     $toast.error(genErrorMessage(response._data.message, 500));
                 },
                 retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             });
 
             if (resp.ok && resp.data) {
@@ -258,19 +258,23 @@ const unsubscribe = (symbol: string) => {
     ws.send(JSON.stringify({ type: "unsubscribe", symbol: symbol }));
 };
 onMounted(async () => {
-    await fetchData()
+    if (props.stock) {
+        await fetchData()
+    }
 });
-watch(() => props.stock, async () => {
-    await fetchData()
-    ws.send(
-        JSON.stringify({
-            type: "subscribe",
-            symbol: props.stock.displaySymbol,
-        }),
-    );
+
+whenever(() => props.stock, async () => {
+    if (props.stock) {
+        await fetchData()
+        ws.send(
+            JSON.stringify({
+                type: "subscribe",
+                symbol: props.stock.displaySymbol,
+            }),
+        );
+    }
 
 })
-
 
 onBeforeUnmount(() => {
     unsubscribe(props.stock.displaySymbol ?? "");
@@ -293,16 +297,16 @@ onBeforeUnmount(() => {
 
 
                             </h3>
-                            <p v-if="!isLoading" :class="{
+                            <p v-if="!isLoading && stock" :class="{
                                 ' !text-pink ': Number.parseFloat(quote?.percent_change ?? '') < 0,
                                 ' !text-lime ': Number.parseFloat(quote?.percent_change ?? '') >= 0,
 
                             }" class=" text-xs sm:text-sm  my1"><b class="font-extrabold font-mono  "><span
                                         v-if="Number.parseFloat(quote?.percent_change ?? '') >= 0">+</span>{{
-                                    Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
-                                    }}%</b> <span class="opacity-70"></span>
+                                            Number.parseFloat(quote?.percent_change ?? '').toFixed(3)
+                                        }}%</b> <span class="opacity-70"></span>
                             </p>
-                            <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading">
+                            <div class="flex lg:mt1 items-center gap-x-2" v-if="!isLoading && stock">
                                 <p class=" text-xs sm:text-sm line-clamp-1   opacity-80">{{ quote?.name }}</p>
                                 <p class=" text-xs sm:text-sm text-lime font-bold   opacity-80">{{ quote?.exchange }}
                                 </p>
@@ -327,7 +331,7 @@ onBeforeUnmount(() => {
 
                         </p>
                         <div class="flex gap-x-2 mt1 items-center">
-                            <p v-if="!isLoading"
+                            <p v-if="!isLoading && stock"
                                 class=" text-xs sm:text-sm p1 px3 text-lime-500 bg-lime-500 flex items-center justify-center gap-x-1 bg-opacity-10 rounded-md ">
                                 <Icon name="solar:arrow-up-linear" />
                                 <b class="font-medium">
@@ -342,7 +346,7 @@ onBeforeUnmount(() => {
                                 class=" h7 w-15 bg-stone-900 flex items-center justify-center gap-x-1 rounded-md ">
                             </Skeleton>
 
-                            <p v-if="!isLoading"
+                            <p v-if="!isLoading && stock"
                                 class=" text-xs sm:text-sm p1 px3 bg-pink-500  bg-opacity-10 rounded-md flex items-center justify-center gap-x-1 text-pink-500">
                                 <Icon name="solar:arrow-down-linear" />
                                 <b class="font-medium ">
@@ -354,11 +358,11 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
                 <div class="mt3 md:mt6 ">
-                    <TrendChart type="area" title="price" v-if="!isLoading" :data="timeseries" height="21rem"
+                    <TrendChart type="area" title="price" v-if="!isLoading && stock" :data="timeseries" height="21rem"
                         width="" />
                     <Skeleton v-if="isLoading" class=" h-21rem bg-stone-900 w-full  rounded-2xl "> </Skeleton>
                     <div class=" grid md:grid-cols-2 gap-4 md:gap-x-12">
-                        <div class="mt16" v-if="!isLoading">
+                        <div class="mt16" v-if="!isLoading && stock">
                             <VolumeChart :data="volumeseries" height="13rem" width="" />
                         </div>
 
@@ -376,7 +380,7 @@ onBeforeUnmount(() => {
                             </Skeleton>
 
                         </div>
-                        <div v-if="!isLoading" class="!mt12 grid  gap-3">
+                        <div v-if="!isLoading && stock" class="!mt12 grid  gap-3">
 
                             <div
                                 class="p3 rounded-xl flex gap-x-3 border border-stone-800 items-center justify-between wfull">

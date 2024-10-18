@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { formatDistance } from 'date-fns';
 import type { Story, TickerNews } from '~/server/types/news.types';
-import { wait } from '~/utils/misc';
 const stockStore = useStockstore()
 const isLoading = ref(true)
 const runtimeConfig = useRuntimeConfig()
@@ -18,7 +17,7 @@ onMounted(async () => {
                     $toast.error(genErrorMessage(500, response._data))
                     return
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -33,7 +32,7 @@ onMounted(async () => {
                     $toast.error(genErrorMessage(500, response._data))
                     return
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -76,7 +75,7 @@ watch(chosenTab, async () => {
                     $toast.error(genErrorMessage(500, response._data))
                     return
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (news.stories) {
                 newsArray.value = news.stories
@@ -91,7 +90,7 @@ watch(chosenTab, async () => {
                     $toast.error(genErrorMessage(500, response._data))
                     return
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (news.stories) {
                 newsArray.value = news.stories

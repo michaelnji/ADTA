@@ -21,7 +21,7 @@ async function fetchData() {
 const { isActive, pause, resume } = useTimeoutPoll(fetchData, 50000)
 pause()
 onMounted(async () => {
-    resume()
+    // resume()
 })
 </script>
 <template>
