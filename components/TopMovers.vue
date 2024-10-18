@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { point } from '@unovis/ts/components/scatter/style';
 import type { ServerResponse, StatusCode } from '~/server/types';
 import type { Quote12 } from '~/types/index.types';
 const stockStore = useStockstore()
@@ -19,7 +18,7 @@ async function fetchData() {
 
                     $toast.error(genErrorMessage(response._data.message, 500))
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (resp.ok && resp.data) {
                 const el = {
@@ -43,7 +42,7 @@ onMounted(async () => {
     top = []
     await fetchData()
 })
-watch(() => stockStore.Stocks, async () => {
+whenever(() => stockStore.Stocks, async () => {
     top = []
     await fetchData()
 

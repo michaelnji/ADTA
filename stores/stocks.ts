@@ -30,7 +30,7 @@ export const useStockstore = defineStore('Stocks', () => {
                     // $toast.error(response._data)
                     throw new Error(genErrorMessage(response._data.message, 500))
                 }, retry: 3,
-                retryDelay: 1000
+                retryDelay: 5000
             })
             if (resp2.ok && resp2.data) {
 
